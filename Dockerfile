@@ -3,20 +3,7 @@
 # ------------------------------------------------------------------
 FROM php:8.3-apache
 
-# Instalar extensiones y dependencias del sistema... (Tu código original)
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libpq-dev \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-dev \
-    && docker-php-ext-install pdo pdo_mysql zip exif pcntl \
-    && docker-php-ext-configure gd --with-jpeg \
-    && docker-php-ext-install gd
-
-# Instalar Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# ... (Instalación de extensiones y Composer - Tu código está correcto aquí) ...
 
 # ------------------------------------------------------------------
 # PARTE 2: Instalación de Dependencias (El Fix)
@@ -24,21 +11,26 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # 1. Copiar ÚNICAMENTE los archivos que Composer necesita.
-# Esto garantiza que composer.json exista en el WORKDIR.
+# (Asegúrate de que ambos, composer.json y composer.lock, existan en la raíz de tu Git)
 COPY composer.json composer.lock ./
 
-# 2. Ejecutar Composer. (Ahora tiene éxito porque los archivos están ahí)
+# 2. **FIX DE PERMISOS TEMPORALES:** Temporalmente, hacemos que el directorio sea escribible por el usuario www-data, que es el que ejecuta Composer.
+RUN chmod -R 777 /var/www/html
+
+# 3. Ejecutar Composer
 RUN composer install --no-dev --optimize-autoloader
 
 # ------------------------------------------------------------------
 # PARTE 3: Copiar el resto del código y permisos
 # ------------------------------------------------------------------
 
-# 3. Copiar el resto del código de la aplicación.
+# 4. Copiar el resto del código de la aplicación.
 COPY . .
 
-# 4. Configurar permisos
-RUN chown -R www-data:www-data storage bootstrap/cache \
+# 5. **RESTAURAR PERMISOS** (Esencial por seguridad y para el runtime)
+RUN chown -R www-data:www-data /var/www/html \
+    && find /var/www/html -type d -exec chmod 755 {} \; \
+    && find /var/www/html -type f -exec chmod 644 {} \; \
     && chmod -R 775 storage bootstrap/cache
 
 # Habilitar Apache y copiar la configuración del Virtual Host
