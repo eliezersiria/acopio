@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 FROM php:8.3-apache
 
-# 1. Instalar dependencias del sistema y extensiones de PHP necesarias para Laravel
+# 1. Instalar dependencias del sistema y librerías necesarias
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -17,15 +17,19 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Habilitar extensiones de PHP
+# Se eliminan: tokenizer, mbstring (generalmente core o instaladas por libonig-dev)
 RUN docker-php-ext-install pdo pdo_mysql zip exif pcntl \
     && docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install gd \
-    # Extensiones cruciales que faltaban y causaron el exit code: 2
-    && docker-php-ext-install bcmath mbstring tokenizer xml
+    \
+    # Se instalan solo las que suelen necesitar compilación externa:
+    && docker-php-ext-install bcmath xml
 
-# 3. Instalar Composer (Solución al exit code 127: se asegura que esté en el PATH)
+# 3. Instalar Composer... (El resto de la Parte 1)
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN chmod +x /usr/local/bin/composer
+
+# ... (El resto del Dockerfile, que ya es correcto) ...
 
 # ------------------------------------------------------------------
 # PARTE 2: Instalación de Dependencias de la Aplicación
