@@ -3,7 +3,14 @@
 # ------------------------------------------------------------------
 FROM php:8.3-apache
 
-# ... (Instalación de extensiones y Composer - Tu código está correcto aquí) ...
+# ... (Instalación de extensiones, etc. - Tu código original aquí) ...
+
+# Instalar Composer (NUEVA FORMA MÁS FIABLE)
+# 1. Copiar Composer a la ubicación estándar de binarios
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+# 2. Asegurar que tiene permisos de ejecución
+RUN chmod +x /usr/local/bin/composer
 
 # ------------------------------------------------------------------
 # PARTE 2: Instalación de Dependencias (El Fix)
@@ -11,14 +18,15 @@ FROM php:8.3-apache
 WORKDIR /var/www/html
 
 # 1. Copiar ÚNICAMENTE los archivos que Composer necesita.
-# (Asegúrate de que ambos, composer.json y composer.lock, existan en la raíz de tu Git)
 COPY composer.json composer.lock ./
 
-# 2. **FIX DE PERMISOS TEMPORALES:** Temporalmente, hacemos que el directorio sea escribible por el usuario www-data, que es el que ejecuta Composer.
+# 2. FIX DE PERMISOS TEMPORALES (Mantén esto)
 RUN chmod -R 777 /var/www/html
 
-# 3. Ejecutar Composer
+# 3. Ejecutar Composer (Ahora debería encontrar el binario)
 RUN composer install --no-dev --optimize-autoloader
+
+# ... (El resto del código) ...
 
 # ------------------------------------------------------------------
 # PARTE 3: Copiar el resto del código y permisos
