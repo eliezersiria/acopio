@@ -32,28 +32,26 @@ RUN chmod +x /usr/local/bin/composer
 # ... (El resto del Dockerfile, que ya es correcto) ...
 
 # ------------------------------------------------------------------
-# PARTE 2: Instalación de Dependencias de la Aplicación
+# PARTE 2: Copiar el Código
 # ------------------------------------------------------------------
 WORKDIR /var/www/html
 
-# 4. Copiar ÚNICAMENTE los archivos que Composer necesita (Solución al exit code 2)
-# Asegúrate de que composer.json y composer.lock estén en tu repositorio de Git
-COPY composer.json composer.lock ./
-
-# 5. FIX DE PERMISOS TEMPORALES y Ejecutar Composer
-# Se asegura de que el usuario www-data pueda escribir en el directorio
-RUN chmod -R 777 /var/www/html
-RUN composer install --no-dev --optimize-autoloader
-
-# ------------------------------------------------------------------
-# PARTE 3: Copiar Código, Permisos y Configuración de Apache
-# ------------------------------------------------------------------
-
-# 6. Copiar el resto del código de la aplicación.
+# 4. Copiar todo el código de la aplicación (incluyendo artisan, composer.json, etc.).
+# Asegúrate de que el archivo .docker/000-default.conf también esté en su lugar.
 COPY . .
 
-# 7. Restaurar Permisos de Laravel (Esencial para seguridad y tiempo de ejecución)
-# El usuario 'www-data' es el usuario de Apache dentro del contenedor
+# ------------------------------------------------------------------
+# PARTE 3: Instalación de Dependencias y Permisos (El Fix)
+# ------------------------------------------------------------------
+
+# 5. FIX DE PERMISOS TEMPORALES y Ejecutar Composer
+# Este paso asegura que el usuario www-data pueda escribir en 'vendor' y 'storage'.
+RUN chmod -R 777 /var/www/html
+
+# 6. Ejecutar Composer (Ahora que 'artisan' está copiado)
+RUN composer install --no-dev --optimize-autoloader
+
+# 7. Restaurar Permisos de Laravel (Esencial para seguridad y runtime)
 RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
@@ -61,5 +59,4 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # 8. Configuración del Servidor Web (Apache)
 RUN a2enmod rewrite
-# Copiar el Virtual Host modificado para que apunte a la carpeta 'public'
 COPY .docker/000-default.conf /etc/apache2/sites-available/000-default.conf
