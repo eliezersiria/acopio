@@ -18,12 +18,11 @@ RUN apt-get update && apt-get install -y \
 
 # 2. Habilitar extensiones de PHP
 # Se eliminan: tokenizer, mbstring (generalmente core o instaladas por libonig-dev)
-RUN docker-php-ext-install pdo pdo_mysql zip exif pcntl \
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip exif pcntl \
     && docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install gd \
-    \
-    # Se instalan solo las que suelen necesitar compilación externa:
     && docker-php-ext-install bcmath xml
+
 
 # 3. Instalar Composer... (El resto de la Parte 1)
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
