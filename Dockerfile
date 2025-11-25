@@ -1,61 +1,66 @@
 # ------------------------------------------------------------------
-# PARTE 1: Configuración base, Extensiones y Composer
+# PARTE 1: Base + dependencias
 # ------------------------------------------------------------------
 FROM php:8.3-apache
 
-# 1. Instalar dependencias del sistema y librerías necesarias
+# 1. Dependencias del sistema
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
+    curl \
     libpq-dev \
     libzip-dev \
     libpng-dev \
     libjpeg-dev \
     libonig-dev \
     libxml2-dev \
-    # Limpieza de caché de APT
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Habilitar extensiones de PHP
-# Se eliminan: tokenizer, mbstring (generalmente core o instaladas por libonig-dev)
+# 2. Extensiones de PHP
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip exif pcntl \
     && docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install gd \
     && docker-php-ext-install bcmath xml
 
+# 3. Instalar NodeJS (para Vite)
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
 
-# 3. Instalar Composer... (El resto de la Parte 1)
+# Verificar version
+RUN node -v && npm -v
+
+# 4. Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN chmod +x /usr/local/bin/composer
 
-# ... (El resto del Dockerfile, que ya es correcto) ...
-
 # ------------------------------------------------------------------
-# PARTE 2: Copiar el Código
+# PARTE 2: Copiar Proyecto
 # ------------------------------------------------------------------
 WORKDIR /var/www/html
-
-# 4. Copiar todo el código de la aplicación (incluyendo artisan, composer.json, etc.).
-# Asegúrate de que el archivo .docker/000-default.conf también esté en su lugar.
 COPY . .
 
 # ------------------------------------------------------------------
-# PARTE 3: Instalación de Dependencias y Permisos (El Fix)
+# PARTE 3: Build Frontend con Vite
 # ------------------------------------------------------------------
 
-# 5. FIX DE PERMISOS TEMPORALES y Ejecutar Composer
-# Este paso asegura que el usuario www-data pueda escribir en 'vendor' y 'storage'.
+RUN npm install
+RUN npm run build
+
+# ------------------------------------------------------------------
+# PARTE 4: Composer + Permisos
+# ------------------------------------------------------------------
+
 RUN chmod -R 777 /var/www/html
 
-# 6. Ejecutar Composer (Ahora que 'artisan' está copiado)
 RUN composer install --no-dev --optimize-autoloader
 
-# 7. Restaurar Permisos de Laravel (Esencial para seguridad y runtime)
 RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
     && chmod -R 775 storage bootstrap/cache
 
-# 8. Configuración del Servidor Web (Apache)
+# ------------------------------------------------------------------
+# PARTE 5: Apache
+# ------------------------------------------------------------------
 RUN a2enmod rewrite
 COPY .docker/000-default.conf /etc/apache2/sites-available/000-default.conf
