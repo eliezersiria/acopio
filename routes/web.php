@@ -23,3 +23,7 @@ Route::get('/productor', [ProductorController::class, 'index'])->name('productor
 Route::get('/productor-agregar', [ProductorController::class, 'create'])->name('productor.agregar')->middleware('auth');
 Route::get('/productor-listar', [ProductorController::class, 'listar'])->name('productor.listar')->middleware('auth');
 Route::get('/productor-editar/{id}', [ProductorController::class, 'editar'])->name('productor.editar')->middleware('auth');
+
+Route::get('/test-db', function () {
+    return DB::select('SELECT NOW()');
+});
