@@ -1,0 +1,15 @@
+[phases.setup]
+cmds = [
+    "apt-get update",
+    "apt-get install -y libjpeg-dev libpng-dev libwebp-dev",
+    "docker-php-ext-configure gd --with-jpeg --with-webp --with-png",
+    "docker-php-ext-install gd exif",
+]
+
+[phases.install]
+cmds = [
+    "composer install --no-dev --optimize-autoloader",
+]
+
+[start]
+cmd = "php artisan serve --host=0.0.0.0 --port=${PORT}"
