@@ -17,12 +17,12 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Extensiones de PHP - CORREGIDO PARA PHP 8.3
+# 2. Extensiones de PHP
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip exif pcntl bcmath xml
 
-# 3. GD con soporte WebP - CONFIGURACIÓN CORRECTA PARA PHP 8.3
-RUN docker-php-ext-configure gd --enable-gd --with-jpeg --with-webp --with-png \
-    && docker-php-ext-install gd
+# 3. GD CONFIGURACIÓN CORRECTA PARA PHP 8.3 (sin --with-png)
+RUN docker-php-ext-configure gd --with-jpeg --with-webp
+RUN docker-php-ext-install gd
 
 # 4. Instalar NodeJS (para Vite)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -64,7 +64,11 @@ RUN a2enmod rewrite
 COPY .docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # ------------------------------------------------------------------
-# PARTE 6: Verificar instalación
+# PARTE 6: Verificar que WebP funciona
 # ------------------------------------------------------------------
-RUN php -r "echo 'GD installed: ' . (extension_loaded('gd') ? 'YES' : 'NO') . \"\\n\";" \
-    && php -r "var_dump(gd_info());"
+RUN php -r "echo 'GD WebP Support: ' . (function_exists('imagewebp') ? 'YES' : 'NO') . \"\\n\";" \
+    && php -r "echo 'GD JPEG Support: ' . (function_exists('imagejpeg') ? 'YES' : 'NO') . \"\\n\";" \
+    && php -r "echo 'GD PNG Support: ' . (function_exists('imagepng') ? 'YES' : 'NO') . \"\\n\";"
+
+EXPOSE 80
+CMD ["apache2-foreground"]
