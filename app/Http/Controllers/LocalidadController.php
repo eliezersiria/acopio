@@ -8,7 +8,8 @@ class LocalidadController extends Controller
 {
     public function index()
     {
-        return view('localidad.localidad');
+        //return view('localidad.localidad');
+        return view('localidad.list-localidad');
     }
 
     public function create()

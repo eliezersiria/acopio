@@ -12,7 +12,8 @@ class ProductorController extends Controller
      */
     public function index()
     {
-        return view('productor.productor');
+        //return view('productor.productor');
+        return view('productor.productor-listar');
     }
 
     /**
