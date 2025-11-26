@@ -12,13 +12,14 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libpng-dev \
     libjpeg-dev \
+    libwebp-dev \
     libonig-dev \
     libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Extensiones de PHP
+# 2. Extensiones de PHP - CORREGIDO (AGREGAR WEBP)
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip exif pcntl \
-    && docker-php-ext-configure gd --with-jpeg \
+    && docker-php-ext-configure gd --with-jpeg --with-webp --with-png \
     && docker-php-ext-install gd \
     && docker-php-ext-install bcmath xml
 
@@ -64,3 +65,8 @@ RUN chown -R www-data:www-data /var/www/html \
 # ------------------------------------------------------------------
 RUN a2enmod rewrite
 COPY .docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# ------------------------------------------------------------------
+# PARTE 6: Verificar GD (OPCIONAL PERO ÚTIL)
+# ------------------------------------------------------------------
+RUN php -r "var_dump(gd_info());"
