@@ -17,20 +17,21 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Extensiones de PHP - CORREGIDO (AGREGAR WEBP)
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip exif pcntl \
-    && docker-php-ext-configure gd --with-jpeg --with-webp --with-png \
-    && docker-php-ext-install gd \
-    && docker-php-ext-install bcmath xml
+# 2. Extensiones de PHP - CORREGIDO PARA PHP 8.3
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip exif pcntl bcmath xml
 
-# 3. Instalar NodeJS (para Vite)
+# 3. GD con soporte WebP - CONFIGURACIÓN CORRECTA PARA PHP 8.3
+RUN docker-php-ext-configure gd --enable-gd --with-jpeg --with-webp --with-png \
+    && docker-php-ext-install gd
+
+# 4. Instalar NodeJS (para Vite)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs
 
 # Verificar version
 RUN node -v && npm -v
 
-# 4. Instalar Composer
+# 5. Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN chmod +x /usr/local/bin/composer
 
@@ -43,16 +44,12 @@ COPY . .
 # ------------------------------------------------------------------
 # PARTE 3: Build Frontend con Vite
 # ------------------------------------------------------------------
-
 RUN npm install
 RUN npm run build
 
 # ------------------------------------------------------------------
 # PARTE 4: Composer + Permisos
 # ------------------------------------------------------------------
-
-RUN chmod -R 777 /var/www/html
-
 RUN composer install --no-dev --optimize-autoloader
 
 RUN chown -R www-data:www-data /var/www/html \
@@ -67,6 +64,7 @@ RUN a2enmod rewrite
 COPY .docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # ------------------------------------------------------------------
-# PARTE 6: Verificar GD (OPCIONAL PERO ÚTIL)
+# PARTE 6: Verificar instalación
 # ------------------------------------------------------------------
-RUN php -r "var_dump(gd_info());"
+RUN php -r "echo 'GD installed: ' . (extension_loaded('gd') ? 'YES' : 'NO') . \"\\n\";" \
+    && php -r "var_dump(gd_info());"
