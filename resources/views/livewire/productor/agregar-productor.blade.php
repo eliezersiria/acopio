@@ -62,7 +62,7 @@
                         @if ($foto)
                             <img src="{{ $foto->temporaryUrl() }}" class="h-40 rounded-lg" />
                         @else
-                            <img src="{{ asset('storage/images/icons/imagen.png') }}" class="rounded-lg" />
+                            <img src="{{ asset('images/icons/imagen.png') }}" class="rounded-lg" />
                         @endif
                     </div>
                     @error('foto') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

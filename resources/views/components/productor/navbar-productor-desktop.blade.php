@@ -24,7 +24,7 @@
 
       <!-- Logo y texto -->
       <a class="btn btn-ghost normal-case text-xl flex items-center space-x-2" href="#">
-        <img src="{{ asset('storage/images/logo/cow.webp') }}" alt="Logo" class="w-11 h-11">
+        <img src="{{ asset('images/logo/cow.webp') }}" alt="Logo" class="w-11 h-11">
         <span>Acopio</span>
       </a>
     </div>
@@ -41,7 +41,7 @@
       </li>
       <li>
         <a href="{{ route('productor') }}" wire:navigate class="bg-primary text-white hover:bg-gray-200 hover:text-black">
-          <img src="{{ asset('storage/images/icons/agricultor.png') }}" class="filter invert" />
+          <img src="{{ asset('images/icons/agricultor.png') }}" class="filter invert" />
           Productores
         </a>
       </li>

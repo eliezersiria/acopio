@@ -4,7 +4,7 @@
             <div class="card-body">
                 <!-- Imagen centrada -->
                 <div class="mb-2">
-                    <img src="{{ asset('storage/images/logo/cow.png') }}" alt="Logo" class="w-32 h-32 mx-auto">
+                    <img src="{{ asset('images/logo/cow.png') }}" alt="Logo" class="w-32 h-32 mx-auto">
                 </div>
 
                 <h2 class="card-title justify-center italic font-bold">Acopio de leche San José</h2>

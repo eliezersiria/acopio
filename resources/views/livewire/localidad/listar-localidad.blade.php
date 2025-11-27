@@ -37,7 +37,7 @@
                         <td>{{ $localidad->nombre }}</td>
                         <td>
                             <a href="{{ route('localidad.editar', $localidad->id) }}" wire:navigate class="btn btn-sm">
-                                <img src="{{ asset('storage/images/icons/lapiz.png') }}" />
+                                <img src="{{ asset('images/icons/lapiz.png') }}" />
                             </a>
                         </td>
                     </tr>

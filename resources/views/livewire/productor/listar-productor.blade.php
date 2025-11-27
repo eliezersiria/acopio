@@ -41,7 +41,7 @@
                         <tr class="hover:bg-base-300">
                             <td>
                                 <a href="{{ route('productor.editar', $productor->id) }}" wire:navigate class="btn btn-xs">
-                                    <img src="{{ asset('storage/images/icons/lapiz.png') }}" />
+                                    <img src="{{ asset('images/icons/lapiz.png') }}" />
                                 </a>
                             </td>
                             <td>
