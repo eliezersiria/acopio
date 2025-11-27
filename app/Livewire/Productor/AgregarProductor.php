@@ -46,19 +46,29 @@ class AgregarProductor extends Component
             $path = null;
 
             if ($this->foto) {
-                // Guardar imagen si se subió 
+                // Generar nombre único
                 $filename = time() . Str::random() . ".webp";
-                // create new manager instance with desired driver
+
+                // Crear nueva instancia de ImageManager
                 $manager = new ImageManager(new Driver());
-                // read image
                 $image = $manager->read($this->foto->getRealPath());
-                //Resize pero sin perder el ratio
+
+                // Redimensionar sin perder ratio
                 $image = $image->scaleDown(height: 192)->toWebp(70);
-                //Guardamos
+
+                // Asegurarse de que la carpeta exista
+                $directory = public_path('images/productores');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                // Guardar imagen
                 $image->save(public_path("images/productores/$filename"));
 
+                // Guardar ruta para la base de datos
                 $path = "images/productores/$filename";
             }
+
 
             Productor::create([
                 'nombre' => $this->nombre,

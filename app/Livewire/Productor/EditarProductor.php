@@ -72,7 +72,7 @@ class EditarProductor extends Component
             //Resize pero sin perder el ratio
             $image = $image->scaleDown(height: 192)->toWebp(70);
             //Guardamos
-            $image->save(public_path("storage/images/productores/$filename"));
+            $image->save(public_path("images/productores/$filename"));
 
             $path = "images/productores/$filename";
 
