@@ -10,6 +10,13 @@ class Login extends Component
     public $email;
     public $password;
     protected $rules = ['email' => 'required|email', 'password' => 'required|min:6'];
+    public function mount()
+    {
+        if (auth()->check())
+        {
+            return redirect()->route('inicio');
+        }
+    }
     public function login()
     {
         $this->validate();

@@ -35,7 +35,7 @@
     <ul class="menu menu-horizontal p-0 text-md">
       <li><a href="{{ route('inicio') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">Inicio</a></li>
       <li><a href="{{ route('localidad') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">
-          <img src="{{ asset('storage/images/icons/nicaragua.png') }}" class="filter invert" />
+          <img src="{{ asset('images/icons/nicaragua.png') }}" class="filter invert" />
           Comarcas
         </a>
       </li>

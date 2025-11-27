@@ -24,7 +24,7 @@
 
       <!-- Logo y texto -->
       <a class="btn btn-ghost normal-case text-xl flex items-center space-x-2" href="#">
-        <img src="{{ asset('storage/images/logo/cow.webp') }}" alt="Logo" class="w-11 h-11">
+        <img src="{{ asset('images/logo/cow.webp') }}" alt="Logo" class="w-11 h-11">
         <span>Acopio</span>
       </a>
     </div>
@@ -36,14 +36,14 @@
       <li><a href="{{ route('inicio') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">Inicio</a></li>
       <li>
         <a href="{{ route('localidad') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">
-          <img src="{{ asset('storage/images/icons/nicaragua.png') }}" class="filter dark:invert"/>
+          <img src="{{ asset('images/icons/nicaragua.png') }}" class="filter dark:invert"/>
           Comarcas
         </a>
       </li>
 
       <li>
         <a href="{{ route('productor') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">
-          <img src="{{ asset('storage/images/icons/agricultor.png') }}" class="filter dark:invert"/>
+          <img src="{{ asset('images/icons/agricultor.png') }}" class="filter dark:invert"/>
           Productores
         </a>
       </li>

@@ -11,7 +11,7 @@ use App\Http\Controllers\ProductorController;
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
+Route::get('/', [Inicio::class, 'index'])->name('inicio')->middleware('auth');
 Route::get('/bienvenido', [Inicio::class, 'index'])->name('inicio')->middleware('auth');
 
 Route::get('/localidad', [LocalidadController::class, 'index'])->name('localidad')->middleware('auth');

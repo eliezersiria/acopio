@@ -26,7 +26,7 @@
     <ul class="menu menu-horizontal flex items-center justify-start">
       <li><!-- Logo y texto -->
         <a class="btn" href="#">
-          <img src="{{ asset('storage/images/logo/cow.webp') }}" alt="Logo" class="w-9 h-9">
+          <img src="{{ asset('images/logo/cow.webp') }}" alt="Logo" class="w-9 h-9">
           <span>Acopio</span>
         </a>
       </li>
