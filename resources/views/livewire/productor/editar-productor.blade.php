@@ -65,7 +65,7 @@
                     <div>
                         <div>
                             <input type="file" wire:model.live="foto" accept="image/*">
-                            <img src="{{ $foto instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ? $foto->temporaryUrl() : ($foto ? Storage::url($foto) : asset('storage/images/icons/imagen.png')) }}"
+                            <img src="{{ $foto instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ? $foto->temporaryUrl() : ($foto ? asset($foto) : asset('images/icons/imagen.png')) }}"
                                 class="h-40 w-40 object-cover rounded-lg shadow-md" alt="Vista previa" />
                         </div>
                         @error('foto') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
