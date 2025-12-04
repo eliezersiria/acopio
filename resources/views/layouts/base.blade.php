@@ -34,7 +34,7 @@
 
     <!-- FOOTER -->
     <div class="w-full h-14 bg-gray-800 text-white flex items-center justify-center">
-        Footer
+        Derechos reservados 2025
     </div>
 
 
