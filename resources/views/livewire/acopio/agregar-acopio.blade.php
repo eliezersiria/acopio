@@ -66,7 +66,7 @@
                             @endif
                         @endif
 
-                        <input type="hidden" name="productor_id" wire:model="productor_id">
+                        <input type="hidden" class="input" wire:model="productor_id">
                         @error('productor_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
                     </div>
