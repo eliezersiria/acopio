@@ -36,23 +36,29 @@
       <li><a href="{{ route('inicio') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">Inicio</a></li>
       <li>
         <a href="{{ route('localidad') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">
-          <img src="{{ asset('images/icons/nicaragua.png') }}" class="filter dark:invert"/>
+          <img src="{{ asset('images/icons/mapa.png') }}" class="filter dark:invert" />
           Comarcas
         </a>
       </li>
 
       <li>
         <a href="{{ route('productor') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">
-          <img src="{{ asset('images/icons/agricultor.png') }}" class="filter dark:invert"/>
+          <img src="{{ asset('images/icons/agricultor.png') }}" class="filter dark:invert" />
           Productores
         </a>
       </li>
 
-      <li><a href="#" class="hover:bg-gray-200">Reportes</a></li>
+      <li>
+        <a href="{{ route('acopio') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">
+          <img src="{{ asset('images/icons/tanque-de-leche.png') }}" class="filter dark:invert" />
+          Acopio
+        </a>
+      </li>
+
     </ul>
   </div>
 
-  
+
 
   <div class="dropdown">
     <div tabindex="0" role="button" class="btn m-1">{{ Auth::user()->name }} ⬇️</div>

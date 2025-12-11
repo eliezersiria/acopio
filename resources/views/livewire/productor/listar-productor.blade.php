@@ -31,36 +31,39 @@
             <table class="table table-hover table-zebra">
                 <thead>
                     <tr>
-                        <th>Editar</th>
                         <th>Nombre</th>
-                        <th>Teléfono/Cédula</th>
+                        <th>Teléfono</th>
+                        <th>Cédula</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($productores as $productor)
                         <tr class="hover:bg-base-300">
                             <td>
-                                <a href="{{ route('productor.editar', $productor->id) }}" wire:navigate class="btn btn-xs">
-                                    <img src="{{ asset('images/icons/lapiz.png') }}" />
-                                </a>
-                            </td>
-                            <td>
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">
                                         <div class="mask mask-squircle h-12 w-12">
-                                            <img src="{{ asset("$productor->foto") }}" />
+                                            <a href="{{ route('productor.editar', $productor->id) }}" wire:navigate>
+                                                <img src="{{ asset("$productor->foto") }}" />
+                                            </a>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <div class="font-bold">{{ $productor->nombre }}</div>
+                                        <div class="font-bold">
+                                            <a href="{{ route('productor.editar', $productor->id) }}" wire:navigate
+                                                class="hover:underline active:underline">
+                                                {{ $productor->nombre }}
+                                            </a>
+                                        </div>
                                         <div class="text-sm opacity-50">{{ $productor->localidad->nombre }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                {{ $productor->telefono }}
-                                <br />
+                                {{ $productor->telefono }}                                
+                            </td>
+                            <td>
                                 <span class="badge badge-ghost badge-sm">{{ $productor->cedula }}</span>
                             </td>
                         </tr>

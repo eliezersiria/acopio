@@ -17,7 +17,7 @@
           <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
 
           <ul class="menu bg-base-200 min-h-full w-80 p-4">
-            <x-productor.sidebar-contenido />
+            <x-acopio.sidebar-contenido />
           </ul>
         </div>
       </div>
@@ -41,14 +41,14 @@
       </li>
       <li>
         <a href="{{ route('productor') }}" wire:navigate
-          class="bg-primary text-white hover:bg-gray-200 hover:text-black">
+          class="hover:bg-gray-200 hover:text-black">
           <img src="{{ asset('images/icons/agricultor.png') }}" class="filter invert" />
           Productores
         </a>
       </li>
 
       <li>
-        <a href="{{ route('acopio') }}" wire:navigate class="hover:bg-gray-200 hover:text-black">
+        <a href="{{ route('acopio') }}" wire:navigate class="bg-primary text-white hover:bg-gray-200 hover:text-black">
           <img src="{{ asset('images/icons/tanque-de-leche.png') }}" class="filter dark:invert" />
           Acopio
         </a>

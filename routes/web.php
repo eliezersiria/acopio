@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Inicio;
 use App\Http\Controllers\LocalidadController;
 use App\Http\Controllers\ProductorController;
+use App\Http\Controllers\AcopioController;
 
 
 
@@ -24,3 +25,5 @@ Route::get('/productor-agregar', [ProductorController::class, 'create'])->name('
 Route::get('/productor-listar', [ProductorController::class, 'listar'])->name('productor.listar')->middleware('auth');
 Route::get('/productor-editar/{id}', [ProductorController::class, 'editar'])->name('productor.editar')->middleware('auth');
 
+Route::get('/acopio', [AcopioController::class, 'index'])->name('acopio')->middleware('auth');
+Route::get('/acopio-agregar', [AcopioController::class, 'create'])->name('acopio.agregar')->middleware('auth');

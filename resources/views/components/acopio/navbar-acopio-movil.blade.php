@@ -15,7 +15,7 @@
 
         <ul class="menu bg-base-200 min-h-full w-80 p-4">
           <!-- Sidebar content here -->
-          <x-localidad.sidebar-contenido />
+          <x-acopio.sidebar-contenido />
         </ul>
       </div>
     </div>
@@ -35,9 +35,9 @@
           <summary>Menu Principal</summary>
           <ul class="bg-base-100 rounded-t-none p-2">
             <li><a href="{{ route('inicio') }}" wire:navigate>Inicio</a></li>
-            <li><a href="{{ route('localidad') }}" wire:navigate class="bg-primary text-white" wire:navigate>Comarcas</a></li>
+            <li><a href="{{ route('localidad') }}" wire:navigate>Comarcas</a></li>
             <li><a href="{{ route('productor') }}" wire:navigate>Productores</a></li>
-            <li><a href="{{ route('acopio') }}" wire:navigate>Acopio</a></li>
+            <li><a href="{{ route('acopio') }}" wire:navigate class="bg-primary text-white">Acopio</a></li>
             <li><a href="{{ route('logout') }}" wire:navigate>{{ Auth::user()->name }} (Salir)</a></li>
           </ul>
         </details>

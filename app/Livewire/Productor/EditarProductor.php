@@ -44,10 +44,10 @@ class EditarProductor extends Component
     {
         $rules = [
             'nombre' => 'required|string|min:5',
-            'cedula' => ['required', 'min:14', Rule::unique('productors', 'cedula')->ignore($this->productor_id)],
-            'telefono' => 'required|numeric|digits:8',
+            'cedula' => [Rule::unique('productors', 'cedula')->ignore($this->productor_id)],
+            'telefono' => 'required|numeric|',
             'localidad_id' => 'required|numeric',
-            'direccion' => 'required|string|min:5',
+            'direccion' => 'required|string|',
         ];
 
         $this->validate($rules);

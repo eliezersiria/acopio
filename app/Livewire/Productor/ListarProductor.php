@@ -16,7 +16,7 @@ class ListarProductor extends Component
     public $tiempo;
     public $search = '';
     // Cada vez que escriba algo, vuelve a la página 1
-    public function updatingBuscar()
+    public function updatingSearch()
     {
         $this->resetPage();
     }
@@ -32,26 +32,14 @@ class ListarProductor extends Component
     public function render()
     {
         $inicio = microtime(true);
-        //$this->productores = Productor::with('localidad')->orderBy('id', 'desc')->paginate(10);
-        $query = Productor::with('localidad')->orderBy('id', 'desc');
-        if (!empty($this->search)) {
-            $searchTerm = $this->search . '*'; // El término de búsqueda
-            // Usaremos la búsqueda Full-Text para 'nombre' y 'cedula'
-            // Y usaremos whereHas para buscar en 'localidad'
-            $query->where(function ($q) use ($searchTerm) {
-                // 1. Búsqueda de Texto Completo (AHORA CON PREFIJOS)
-                // El operador '?' reemplaza a $searchTerm, que ahora es, por ejemplo: 'mes*'
-                $q->whereRaw("MATCH(nombre, cedula) AGAINST (? IN BOOLEAN MODE)", [$searchTerm])
-                    // 2. Búsqueda en la Relación 'localidad' (La mantenemos)
-                    ->orWhereHas('localidad', function ($qLocalidad) use ($searchTerm) {
-                        // Volvemos a usar el término original SIN el '*' para el filtro LIKE
-                        $originalSearchTerm = str_replace('*', '', $searchTerm);
-                        $qLocalidad->where('nombre', 'like', '%' . $originalSearchTerm . '%');
-                    });
-            });
-        }
+        // Búsqueda con Scout (Meilisearch)
+        $this->productores = Productor::search($this->search)
+            ->query(function ($q) {
+                // Cargar relación localidad
+                $q->with('localidad');
+            })->paginate(10);
 
-        $this->productores = $query->paginate(10);
+        //$this->productores = $query->paginate(10);
         $fin = microtime(true);
         $this->tiempo = round($fin - $inicio, 3);
         $this->numeroFilas = $this->productores->total();

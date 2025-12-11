@@ -30,7 +30,7 @@ class AgregarProductor extends Component
 
     protected $rules = [
         'nombre' => 'required|string|min:5',
-        'cedula' => 'required|string|min:14|unique:productors,cedula',
+        'cedula' => 'unique:productors,cedula',
         'telefono' => 'required|numeric|min:8',
         'localidad_id' => 'required',
         'direccion' => 'required|string|min:5',

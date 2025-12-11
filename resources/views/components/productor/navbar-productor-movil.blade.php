@@ -37,7 +37,7 @@
             <li><a href="{{ route('inicio') }}" wire:navigate>Inicio</a></li>
             <li><a href="{{ route('localidad') }}" wire:navigate>Comarcas</a></li>
             <li><a href="{{ route('productor') }}" wire:navigate class="bg-primary text-white">Productores</a></li>
-            <li><a>Reportes</a></li>
+            <li><a href="{{ route('acopio') }}" wire:navigate>Acopio</a></li>
             <li><a href="{{ route('logout') }}" wire:navigate>{{ Auth::user()->name }} (Salir)</a></li>
           </ul>
         </details>
