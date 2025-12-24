@@ -7,7 +7,7 @@
                     <img src="{{ asset('images/logo/cow.png') }}" alt="Logo" class="w-32 h-32 mx-auto">
                 </div>
 
-                <h2 class="card-title justify-center italic font-bold">Acopio de leche San José</h2>
+                <h2 class="card-title justify-center italic font-bold">Acopio Caracito</h2>
                 <h2 class="card-title justify-center mb-3">Iniciar sesión</h2>
 
                 @if ($errors->any())
