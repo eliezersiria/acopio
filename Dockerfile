@@ -25,6 +25,7 @@ RUN docker-php-ext-install \
     zip \
     intl \
     gd \
+    bcmath \
     opcache
 
 # Directorio de trabajo
