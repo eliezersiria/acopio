@@ -56,4 +56,10 @@ class Productor extends Model
     {
         return $this->hasMany(PrecioLecheSemanal::class, 'productor_id');
     }
+
+    // Un productor tiene muchos adelantos
+    public function adelantos()
+    {
+        return $this->hasMany(Adelanto::class, 'productor_id');
+    }
 }

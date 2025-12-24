@@ -114,13 +114,54 @@ class AcopioSemana extends Component
             },
             'preciosSemanales' => function ($query) use ($fechaInicial) {
                 $query->where('fecha_inicio', $fechaInicial);
-            }
+            },
         ])
+            ->withSum([
+                'adelantos as total_efectivo' => function ($query) use ($fechaInicial, $fechaFinal) {
+                    $query->whereBetween('fecha', [
+                        $fechaInicial->format('Y-m-d'),
+                        $fechaFinal->format('Y-m-d')
+                    ]);
+                }
+            ], 'efectivo')
+            ->withSum([
+                'adelantos as total_alimentos' => function ($query) use ($fechaInicial, $fechaFinal) {
+                    $query->whereBetween('fecha', [
+                        $fechaInicial->format('Y-m-d'),
+                        $fechaFinal->format('Y-m-d')
+                    ]);
+                }
+            ], 'alimentos')
+            ->withSum([
+                'adelantos as total_lacteos' => function ($query) use ($fechaInicial, $fechaFinal) {
+                    $query->whereBetween('fecha', [
+                        $fechaInicial->format('Y-m-d'),
+                        $fechaFinal->format('Y-m-d')
+                    ]);
+                }
+            ], 'lacteos')
+            ->withSum([
+                'adelantos as total_otros' => function ($query) use ($fechaInicial, $fechaFinal) {
+                    $query->whereBetween('fecha', [
+                        $fechaInicial->format('Y-m-d'),
+                        $fechaFinal->format('Y-m-d')
+                    ]);
+                }
+            ], 'otros')
+            ->withSum([
+                'adelantos as total_combustible' => function ($query) use ($fechaInicial, $fechaFinal) {
+                    $query->whereBetween('fecha', [
+                        $fechaInicial->format('Y-m-d'),
+                        $fechaFinal->format('Y-m-d')
+                    ]);
+                }
+            ], 'combustible')
             ->where('semana', $this->tipo_semana)
             ->whereHas('localidad', function ($q) {
                 $q->where('id', $this->localidad_id);
             })
             ->get();
+
 
         $reporte = [];
 
@@ -139,6 +180,13 @@ class AcopioSemana extends Component
                     'total_cordobas'     => 0,
                     'fecha_inicial' => $fechaInicial->format('Y-m-d'),
                     'deduccion_compra' => 0,
+                    'total_efectivo' => 0,
+                    'total_combustible' => 0,
+                    'total_alimentos' => 0,
+                    'total_lacteos' => 0,
+                    'total_otros' => 0,
+                    'total_deducciones' => 0,
+                    'neto_recibir' => 0
                 ];
             }
 
@@ -146,16 +194,34 @@ class AcopioSemana extends Component
             foreach ($productor->acopios as $acopio) {
                 $fecha = $acopio->fecha;
                 $litros = (float) $acopio->litros;
-
                 // Guardar litros por fecha
                 $reporte[$clave]['litros'][$fecha] = $litros;
-
                 // Sumar litros totales
                 $reporte[$clave]['total_litros'] += $litros;
             }
             // Calcular monto total UNA VEZ después de sumar todos los litros
             $reporte[$clave]['total_cordobas'] = $reporte[$clave]['total_litros'] * $precio;
+            // Calcular deducción
             $reporte[$clave]['deduccion_compra'] = $reporte[$clave]['total_cordobas'] * (float)0.013;
+            //Calcular total_efectivo
+            $reporte[$clave]['total_efectivo'] = $productor->total_efectivo;
+            //Calcular total_combustible
+            $reporte[$clave]['total_combustible'] = $productor->total_combustible;
+            //Calcular total_efectivo
+            $reporte[$clave]['total_alimentos'] = $productor->total_alimentos;
+            //Calcular total lacteos
+            $reporte[$clave]['total_lacteos'] = $productor->total_lacteos;
+            //Calcular total_otros
+            $reporte[$clave]['total_otros'] = $productor->total_otros;
+            //Calcular total de deducciones
+            $reporte[$clave]['total_deducciones'] = $reporte[$clave]['total_cordobas'] * (float)0.013 +
+                $productor->total_efectivo +
+                $productor->total_combustible +
+                $productor->total_alimentos +
+                $productor->total_lacteos +
+                $productor->total_otros;
+            //Calcular neto a recibir
+            $reporte[$clave]['neto_recibir'] = $reporte[$clave]['total_cordobas'] - $reporte[$clave]['total_deducciones'];
         }
 
         $this->numeroFilas = count($reporte);
@@ -242,7 +308,7 @@ class AcopioSemana extends Component
         );
 
         $this->editando_precio_litro = null;
-        $this->precio_leche_semanal = null;        
+        $this->precio_leche_semanal = null;
     }
 
     public function render()

@@ -4,7 +4,7 @@ namespace App\Livewire\Acopio;
 
 use Livewire\Component;
 use App\Models\Productor;
-use App\Models\Acopio;
+use App\Models\Adelanto;
 
 class AgregarAcopio extends Component
 {
@@ -13,23 +13,19 @@ class AgregarAcopio extends Component
     public $productores = [];
     public $productor_id = null;
     public $localidad;
-    //public $localidad_id;
     public $fecha;
-    public $hora;
-    public $litros;
-    public $precio_litro;
-    public $total_pagado;
+    public $efectivo;
+    public $combustible;
+    public $alimentos;
+    public $lacteos;
+    public $otros;
     protected $rules = [
         'productor_id' => 'required|exists:productors,id',
-        //'localidad_id' => 'required|exists:localidads,id',
-        'litros' => 'required|numeric',
-        'precio_litro' => 'required|numeric',
-        'total_pagado' => 'required|numeric|min:0.01',
+        'fecha' => 'required'
     ];
     public function mount()
     {
-        $this->fecha = now()->format('Y-m-d');
-        $this->hora = now()->format('H:i:s');
+        //$this->fecha = now()->format('Y-m-d');
     }
 
     public function updatedProductorquery()
@@ -67,9 +63,7 @@ class AgregarAcopio extends Component
             $this->productorquery = $prod->nombre;
 
             $this->localidad = $prod->localidad?->nombre . " ✔" ?? 'Sin localidad';
-            //$this->localidad_id = $prod->localidad?->id ?? 'Sin id';
         }
-
     }
 
     public function incrementHighlight()
@@ -100,37 +94,23 @@ class AgregarAcopio extends Component
         }
     }
 
-    public function updatedLitros()
-    {
-        $this->total_pagado = ((float) ($this->litros ?? 0)) * ((float) ($this->precio_litro ?? 0));
-    }
-
-    public function updatedPrecioLitro()
-    {
-        $this->total_pagado = ((float) ($this->litros ?? 0)) * ((float) ($this->precio_litro ?? 0));
-    }
-
-    public function SaveAcopio()
+    public function SaveAdelanto()
     {
         $this->validate();
 
-        // Multiplicación en PHP al momento de guardar
-        $total = ((float) ($this->litros ?? 0)) * ((float) ($this->precio_litro ?? 0));
-
-        Acopio::create([
+        Adelanto::create([
             'productor_id' => $this->productor_id,
-            //'localidad_id' => $this->localidad_id,
-            'fecha' => $this->fecha,
-            'hora' => $this->hora,
-            'litros' => $this->litros,
-            'precio_litro' => $this->precio_litro,
-            'total_pagado' => $total,
+            'efectivo' => $this->efectivo,
+            'combustible' => $this->combustible,
+            'alimentos' => $this->alimentos,
+            'lacteos' => $this->lacteos,
+            'otros' => $this->otros,
+            'fecha' => $this->fecha
         ]);
 
         // Resetear solo los campos que quieres limpiar, sin tocar fecha y hora
         $this->reset();
-        $this->fecha = now()->format('Y-m-d');
-        $this->hora = now()->format('H:i:s');
+        //$this->fecha = now()->format('Y-m-d');
         session()->flash('status', 'Acopio registrado correctamente!');
     }
     public function render()

@@ -59,6 +59,10 @@
                     </th>
 
                     <th class="bg-cyan-800 text-white border border-gray-300 text-sm">
+                        Combustible
+                    </th>
+
+                    <th class="bg-cyan-800 text-white border border-gray-300 text-sm">
                         Alimentos
                     </th>
 
@@ -146,12 +150,27 @@
                     <td class="border border-gray-300 text-sm text-center">
                         {{ number_format($fila['deduccion_compra']) ?? '0' }}
                     </td>
-                    <td class="border border-gray-300 text-sm"></td>
-                    <td class="border border-gray-300 text-sm"></td>
-                    <td class="border border-gray-300 text-sm"></td>
-                    <td class="border border-gray-300 text-sm"></td>
-                    <td class="border border-gray-300 text-sm"></td>
-                    <td class="border border-gray-300 text-sm"></td>
+                    <td class="border border-gray-300 text-sm text-center">
+                        {{ number_format($fila['total_efectivo']) ?? '0' }}
+                    </td>
+                    <td class="border border-gray-300 text-sm text-center">
+                        {{ number_format($fila['total_combustible']) ?? '0' }}
+                    </td>
+                    <td class="border border-gray-300 text-sm text-center">
+                        {{ number_format($fila['total_alimentos']) ?? '0' }}
+                    </td>
+                    <td class="border border-gray-300 text-sm text-center">
+                        {{ number_format($fila['total_lacteos']) ?? '0' }}
+                    </td>
+                    <td class="border border-gray-300 text-sm text-center">
+                        {{ number_format($fila['total_otros']) ?? '' }}
+                    </td>
+                    <td class="border border-gray-300 text-sm text-center">
+                        {{ number_format($fila['total_deducciones']) ?? '' }}
+                    </td>
+                    <td class="border border-gray-300 text-sm text-center">
+                        {{ number_format($fila['neto_recibir']) ?? '' }}
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

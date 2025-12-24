@@ -20,13 +20,13 @@ return new class extends Migration {
             $table->time('hora')->nullable();
 
             // Cantidad entregada
-            $table->decimal('litros', 10, 2);
+            $table->decimal('litros', 10, 2)->nullable();
 
             // Precio por litro en el día de la entrega
-            $table->decimal('precio_litro', 10, 2);
+            $table->decimal('precio_litro', 10, 2)->nullable();
 
             // Total calculado del pago
-            $table->decimal('total_pagado', 12, 2);
+            $table->decimal('total_pagado', 12, 2)->nullable();
             $table->text('observaciones')->nullable();
             $table->softDeletes();
             $table->timestamps();

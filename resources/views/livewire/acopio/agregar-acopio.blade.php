@@ -14,10 +14,10 @@
             @endif
 
             <legend>
-                <h2 class="text-xl font-bold">Registrar Acopio</h2>
+                <h2 class="text-xl font-bold">Registrar Adelanto</h2>
             </legend>
 
-            <form wire:submit.prevent="SaveAcopio">
+            <form wire:submit.prevent="SaveAdelanto">
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
@@ -80,29 +80,37 @@
                     <div>
                         <label class="label">Fecha</label>
                         <input type="date" class="input" wire:model="fecha" />
+                        @error('fecha') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
-                        <label class="label">Hora</label>
-                        <input type="time" class="input" wire:model="hora" step="1" />
+                        <label class="label">Adelanto de Efectivo</label>
+                        <input type="number" class="input" wire:model="efectivo" />
+                        @error('efectivo') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
-                        <label class="label">Litros recibidos</label>
-                        <input type="number" class="input" wire:model.live="litros" />
-                        @error('litros') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        <label class="label">Adelanto de Combustible</label>
+                        <input type="number" class="input" wire:model="combustible" />
+                        @error('combustible') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
-                        <label class="label">Precio por litro</label>
-                        <input type="number" class="input" wire:model.live="precio_litro" />
-                        @error('precio_litro') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        <label class="label">Adelanto de Alimentos</label>
+                        <input type="number" class="input" wire:model="alimentos" />
+                        @error('alimentos') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
-                        <label class="label">Total pagado</label>
-                        <input type="number" class="input" wire:model="total_pagado" readonly />
-                        @error('total_pagado') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        <label class="label">Adelanto de Lácteos</label>
+                        <input type="number" class="input" wire:model="lacteos" />
+                        @error('lacteos') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="label">Adelanto de Otros</label>
+                        <input type="number" class="input" wire:model="otros" />
+                        @error('otros') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                 </div>
