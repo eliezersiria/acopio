@@ -1,14 +1,14 @@
-# --- Etapa 1: Compilación de Assets (Node.js) ---
+# --- ETAPA 1: Compilar Assets (Node.js) ---
 FROM node:20-alpine AS assets-builder
 WORKDIR /app
-# Copiamos solo los archivos de configuración de node para aprovechar la caché
+# Copiamos archivos de dependencias de node
 COPY package*.json ./
 RUN npm install
-# Copiamos el resto del código y compilamos
+# Copiamos el código y compilamos JS/CSS
 COPY . .
 RUN npm run build
 
-# --- Etapa 2: Servidor de Producción (FrankenPHP) ---
+# --- ETAPA 2: Servidor de Producción (FrankenPHP) ---
 FROM dunglas/frankenphp:1-php8.3-alpine
 
 # Dependencias del sistema
@@ -37,14 +37,13 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
 
 WORKDIR /app
 
-# Copiar Composer desde la imagen oficial
+# Copiar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copiar el código de la aplicación
+# Copiar todo el código del proyecto
 COPY . .
 
-# COPIAR LOS ASSETS COMPILADOS DESDE LA ETAPA 1
-# Esto trae la carpeta public/build (con el manifest.json) que generó Vite
+# TRAER ASSETS COMPILADOS (Esto soluciona el error de Vite)
 COPY --from=assets-builder /app/public/build ./public/build
 
 # Instalar dependencias de PHP
@@ -53,17 +52,14 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
-# Permisos correctos para Laravel
+# Permisos para Laravel
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Variables de entorno
 ENV APP_ENV=production
 ENV OCTANE_SERVER=frankenphp
-ENV APP_RUNNING_IN_CONSOLE=false
 
 EXPOSE 8080
 
-# Comando de inicio
 CMD php artisan octane:start \
     --server=frankenphp \
     --host=0.0.0.0 \
