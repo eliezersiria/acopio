@@ -24,6 +24,7 @@ class EditarProductor extends Component
     public $telefono;
     public $localidad_id;
     public $direccion;
+    public $semana;
     public $foto;
     public $localidades;
 
@@ -38,6 +39,7 @@ class EditarProductor extends Component
         $this->cedula = $productor->cedula;
         $this->telefono = $productor->telefono;
         $this->direccion = $productor->direccion;
+        $this->semana = $productor->semana;
         $this->foto = $productor->foto;
     }
     public function updateProductor()
@@ -48,6 +50,7 @@ class EditarProductor extends Component
             'telefono' => 'required|numeric|',
             'localidad_id' => 'required|numeric',
             'direccion' => 'required|string|',
+            'semana' => 'required',
         ];
 
         $this->validate($rules);
@@ -91,6 +94,7 @@ class EditarProductor extends Component
             'telefono' => $this->telefono,
             'localidad_id' => $this->localidad_id,
             'direccion' => $this->direccion,
+            'semana' => $this->semana,
             'foto' => $path,
         ]);
 

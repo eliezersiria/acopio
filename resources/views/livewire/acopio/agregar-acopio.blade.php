@@ -74,9 +74,7 @@
 
                     <div>
                         <label class="label">Comunidad</label>
-                        <input type="text" class="input" wire:model="localidad" readonly />
-                        <input type="hidden" class="input" wire:model="localidad_id" />
-                        @error('localidad_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        <input type="text" class="input" wire:model="localidad" readonly />                        
                     </div>
 
                     <div>

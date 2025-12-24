@@ -13,10 +13,7 @@ return new class extends Migration {
         Schema::create('acopios', function (Blueprint $table) {
             $table->id();
             // Relación con productor
-            $table->foreignId('productor_id')->constrained('productors')->restrictOnDelete();
-
-            // Relación con comunidad / comarca
-            $table->foreignId('localidad_id')->nullable()->constrained('localidads')->nullOnDelete();
+            $table->foreignId('productor_id')->constrained('productors')->restrictOnDelete()->cascadeOnUpdate();           
 
             // Fecha y hora de la entrega
             $table->date('fecha');

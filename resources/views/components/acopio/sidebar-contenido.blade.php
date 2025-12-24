@@ -16,11 +16,11 @@
 </li>
 
 <li>
-    <a href="{{ route('productor.listar') }}" wire:navigate
-        class="hover:bg-base-300 hover:border-base-400 py-4 px-4 block border border-base-300 rounded-lg {{ Route::is('productor.listar') || Route::is('productor.editar') ? 'bg-primary text-white' : 'bg-base-100' }} shadow-sm hover:shadow-md transition-all duration-200">
+    <a href="{{ route('acopio')}}" wire:navigate
+        class="hover:bg-base-300 hover:border-base-400 py-4 px-4 block border border-base-300 rounded-lg {{ Route::is('acopio') ? 'bg-primary text-white' : 'bg-base-100' }} shadow-sm hover:shadow-md transition-all duration-200">
         <div class="flex items-center space-x-3">
             <img src="{{ asset('images/icons/portapapeles.png') }}"/>
-            <span>Reporte de Acopios</span>
+            <span>Reporte de esta semana</span>
         </div>
     </a>
 </li>

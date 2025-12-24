@@ -14,17 +14,17 @@ return new class extends Migration {
             $table->id();
             // Relación con comarca (sin cascade)
             // si se elimina la comarca, el productor queda con null
-            $table->foreignId('localidad_id')->constrained()->restrictOnDelete();
+            $table->foreignId('localidad_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
             // Información del productor            
             $table->string('nombre', 150);
             $table->string('cedula', 30)->nullable()->unique();
             $table->string('telefono', 20)->nullable();
             $table->string('direccion')->nullable();            
             $table->boolean('activo')->default(true);
+            $table->string('semana',3);
             $table->string('foto')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->fullText(['nombre', 'cedula']);
         });
     }
 

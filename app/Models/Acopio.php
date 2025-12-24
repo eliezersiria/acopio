@@ -21,10 +21,5 @@ class Acopio extends Model
     {
         return $this->belongsTo(Productor::class);
     }
-
-    public function comunidad()
-    {
-        return $this->belongsTo(Localidad::class);
-    }
 }
 

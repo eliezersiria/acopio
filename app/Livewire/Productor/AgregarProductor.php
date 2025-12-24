@@ -20,6 +20,7 @@ class AgregarProductor extends Component
     public $telefono;
     public $localidad_id;
     public $direccion;
+    public $semana;
     public $foto;
     public $localidades;
 
@@ -34,7 +35,8 @@ class AgregarProductor extends Component
         'telefono' => 'required|numeric|min:8',
         'localidad_id' => 'required',
         'direccion' => 'required|string|min:5',
-        'foto' => 'required|image|max:2048',
+        'semana' => 'required',
+        'foto' => 'image|max:2048',
     ];
 
     public function saveProductor()
@@ -75,11 +77,12 @@ class AgregarProductor extends Component
                 'cedula' => $this->cedula,
                 'telefono' => $this->telefono,
                 'localidad_id' => $this->localidad_id,
+                'semana' => $this->semana,
                 'direccion' => $this->direccion,
                 'foto' => $path,
             ]);
             // Limpiar el campo
-            $this->reset(['nombre', 'cedula', 'telefono', 'localidad_id', 'direccion', 'foto']);
+            $this->reset(['nombre', 'cedula', 'telefono', 'localidad_id', 'direccion','semana','foto']);
             // Mensaje de éxito
             session()->flash('status', 'Productor agregado correctamente');
         } catch (\Exception $e) {

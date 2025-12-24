@@ -38,8 +38,7 @@
             <li><a href="{{ route('localidad') }}" wire:navigate>Comarcas</a></li>
             <li><a href="{{ route('productor') }}" wire:navigate>Productores</a></li>
             <li><a href="{{ route('acopio') }}" wire:navigate>Acopio</a></li>            
-            <li><a href="{{ route('logout') }}" wire:navigate>Salir</a></li>
-            
+            <li><a href="{{ route('logout') }}" wire:navigate>{{ Auth::user()->name }} (Salir)</a></li>            
           </ul>
         </details>
       </li>

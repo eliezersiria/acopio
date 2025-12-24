@@ -51,10 +51,20 @@
                     </div>
 
                     <div>
+                        <label class="label">Seleccione semana de entrega</label>
+                        <select class="select appearance-none" wire:model="semana">
+                            <option value="">Seleccione semana</option>
+                            <option value="A">Domingo a Sábado</option>
+                            <option value="B">Viernes a Jueves</option>
+                        </select>
+                        @error('semana') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
                         <label class="label">Dirección</label>
                         <textarea class="textarea" placeholder="direccion" wire:model="direccion" rows="4"></textarea>
                         @error('direccion') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    </div>
+                    </div>                    
 
                     <div>
                         <input type="file" wire:model="foto" accept="image/*">

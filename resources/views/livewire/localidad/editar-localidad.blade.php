@@ -49,11 +49,13 @@
                         <span wire:loading wire:target="save" class="loading loading-spinner mr-2"></span>
                     </button>
 
+                    {{--
                     <button type="button" wire:click="sendTrash({{ $localidad_id }})"
                         class="btn bg-red-600 text-white mt-4">
                         <x-heroicon-s-trash class="w-4 h-4" />
                         Enviar a la Papelera
                     </button>
+                    --}}
                 </form>
 
             </fieldset>

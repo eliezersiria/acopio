@@ -29,6 +29,7 @@ class Productor extends Model
         'telefono',
         'direccion',
         'activo',
+        'semana',
         'foto',
         'created_at',
         'updated_at',
@@ -50,4 +51,9 @@ class Productor extends Model
         return $this->hasMany(Acopio::class);
     }
 
+    // Un productor tiene muchos precios semanales
+    public function preciosSemanales()
+    {
+        return $this->hasMany(PrecioLecheSemanal::class, 'productor_id');
+    }
 }

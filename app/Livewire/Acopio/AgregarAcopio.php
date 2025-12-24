@@ -11,10 +11,9 @@ class AgregarAcopio extends Component
     public $productorquery = '';
     public $highlightIndex = -1; // No hay selección por defecto
     public $productores = [];
-
     public $productor_id = null;
     public $localidad;
-    public $localidad_id;
+    //public $localidad_id;
     public $fecha;
     public $hora;
     public $litros;
@@ -22,7 +21,7 @@ class AgregarAcopio extends Component
     public $total_pagado;
     protected $rules = [
         'productor_id' => 'required|exists:productors,id',
-        'localidad_id' => 'required|exists:localidads,id',
+        //'localidad_id' => 'required|exists:localidads,id',
         'litros' => 'required|numeric',
         'precio_litro' => 'required|numeric',
         'total_pagado' => 'required|numeric|min:0.01',
@@ -39,7 +38,7 @@ class AgregarAcopio extends Component
         $this->highlightIndex = -1;
 
         $this->reset('localidad'); // limpia el dropdown
-        $this->reset('localidad_id');
+        //$this->reset('localidad_id');
 
         if (!empty($this->productorquery)) {
 
@@ -68,7 +67,7 @@ class AgregarAcopio extends Component
             $this->productorquery = $prod->nombre;
 
             $this->localidad = $prod->localidad?->nombre . " ✔" ?? 'Sin localidad';
-            $this->localidad_id = $prod->localidad?->id ?? 'Sin id';
+            //$this->localidad_id = $prod->localidad?->id ?? 'Sin id';
         }
 
     }
@@ -120,7 +119,7 @@ class AgregarAcopio extends Component
 
         Acopio::create([
             'productor_id' => $this->productor_id,
-            'localidad_id' => $this->localidad_id,
+            //'localidad_id' => $this->localidad_id,
             'fecha' => $this->fecha,
             'hora' => $this->hora,
             'litros' => $this->litros,

@@ -33,19 +33,16 @@ class ListarProductor extends Component
     {
         $inicio = microtime(true);
         // Búsqueda con Scout (Meilisearch)
-        $this->productores = Productor::search($this->search)
+        $productores = Productor::search($this->search)
             ->query(function ($q) {
-                // Cargar relación localidad
                 $q->with('localidad');
             })->paginate(10);
 
         //$this->productores = $query->paginate(10);
         $fin = microtime(true);
         $this->tiempo = round($fin - $inicio, 3);
-        $this->numeroFilas = $this->productores->total();
+        $this->numeroFilas = $productores->total();
 
-        return view('livewire.productor.listar-productor', [
-            'productores' => $this->productores
-        ]);
+        return view('livewire.productor.listar-productor', compact('productores'));
     }
 }

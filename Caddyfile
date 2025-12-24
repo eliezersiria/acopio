@@ -1,0 +1,14 @@
+:8080 {
+	root * /home/natansiria/proyectos/acopio/public
+	php_server {
+		# Esto es opcional, define worker file si quieres:
+		worker /home/natansiria/proyectos/acopio/public/frankenphp-worker.php
+	}
+
+	encode gzip
+	file_server
+	log {
+		output file /home/natansiria/proyectos/acopio/storage/logs/caddy_access.log
+		format single_field common_log
+	}
+}

@@ -24,7 +24,7 @@ class Login extends Component
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password]))
         {
             session()->regenerate();        
-            return $this->redirect('bienvenido', navigate: true);
+            return $this->redirect('/', navigate: true);
         }
         session()->flash('message', 'Las credenciales no coinciden');
     }
