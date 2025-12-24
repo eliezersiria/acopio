@@ -39,6 +39,9 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
+# 5. --- NUEVO: Instalar dependencias de Node y compilar Assets (Vite) ---
+RUN npm install && npm run build
+
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 ENV APP_ENV=production
