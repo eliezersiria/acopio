@@ -143,7 +143,9 @@
                     <td class="border border-gray-300 text-sm text-center">
                         {{ number_format($fila['total_cordobas']) ?? '0' }}
                     </td>
-                    <td class="border border-gray-300 text-sm"></td>
+                    <td class="border border-gray-300 text-sm text-center">
+                        {{ number_format($fila['deduccion_compra']) ?? '0' }}
+                    </td>
                     <td class="border border-gray-300 text-sm"></td>
                     <td class="border border-gray-300 text-sm"></td>
                     <td class="border border-gray-300 text-sm"></td>

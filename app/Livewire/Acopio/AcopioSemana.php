@@ -137,7 +137,8 @@ class AcopioSemana extends Component
                     'total_litros' => 0,
                     'precio_semanal' => $precio,
                     'total_cordobas'     => 0,
-                    'fecha_inicial' => $fechaInicial->format('Y-m-d')
+                    'fecha_inicial' => $fechaInicial->format('Y-m-d'),
+                    'deduccion_compra' => 0,
                 ];
             }
 
@@ -154,6 +155,7 @@ class AcopioSemana extends Component
             }
             // Calcular monto total UNA VEZ después de sumar todos los litros
             $reporte[$clave]['total_cordobas'] = $reporte[$clave]['total_litros'] * $precio;
+            $reporte[$clave]['deduccion_compra'] = $reporte[$clave]['total_cordobas'] * (float)0.013;
         }
 
         $this->numeroFilas = count($reporte);
