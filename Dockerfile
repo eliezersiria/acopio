@@ -24,19 +24,29 @@ RUN docker-php-ext-install \
     pdo_mysql \
     zip \
     intl \
-    opcache \
-    gd
+    gd \
+    opcache
 
+# Directorio de trabajo
 WORKDIR /app
 
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copiar proyecto
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+# 🔥 CLAVE: instalar deps DESPUÉS de extensiones
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
+
+# Permisos
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-ENV OCTANE_SERVER=frankenphp
 ENV APP_ENV=production
+ENV OCTANE_SERVER=frankenphp
 
 EXPOSE 8080
 
