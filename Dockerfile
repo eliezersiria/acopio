@@ -18,7 +18,7 @@ RUN docker-php-ext-configure gd \
     --with-jpeg \
     --with-webp
 
-# Instalar extensiones PHP
+# Instalar extensiones PHP (🔥 incluye pcntl)
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
@@ -26,24 +26,19 @@ RUN docker-php-ext-install \
     intl \
     gd \
     bcmath \
+    pcntl \
     opcache
 
-# Directorio de trabajo
 WORKDIR /app
 
-# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Copiar proyecto
 COPY . .
 
-# 🔥 CLAVE: instalar deps DESPUÉS de extensiones
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction
 
-# Permisos
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 ENV APP_ENV=production
