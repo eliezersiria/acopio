@@ -73,7 +73,8 @@
 
                     <div>
                         <label class="label">Comunidad</label>
-                        <input type="text" class="input" wire:model="localidad" readonly />                        
+                        <input type="text" class="input" wire:model="localidad" readonly />
+                        @error('localidad') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     <div>

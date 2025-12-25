@@ -1,8 +1,5 @@
 <div>
     {{-- Knowing others is intelligence; knowing yourself is true wisdom. --}}
-    
-
-
 
     <div class="border-l-4 border-yellow-600 pl-4 flex">
 
