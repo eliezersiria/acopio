@@ -111,7 +111,7 @@ class AgregarAcopio extends Component
         // Resetear solo los campos que quieres limpiar, sin tocar fecha y hora
         $this->reset();
         //$this->fecha = now()->format('Y-m-d');
-        session()->flash('status', 'Acopio registrado correctamente!');
+        session()->flash('status', 'Adelanto registrado correctamente!');
     }
     public function render()
     {

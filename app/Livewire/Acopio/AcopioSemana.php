@@ -8,11 +8,8 @@ use App\Models\Localidad;
 use App\Models\Productor;
 use App\Models\PrecioLecheSemanal;
 
-
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
-
-Carbon::setLocale('es');
 
 class AcopioSemana extends Component
 {
@@ -37,8 +34,8 @@ class AcopioSemana extends Component
 
     public function mount()
     {
+        Carbon::setLocale('es');
         $this->comarcas = Localidad::all();
-
         // Default localidad y tipo_semana
         $this->localidad_id ??= $this->comarcas->first()?->id;
         $this->localidad = Localidad::find($this->localidad_id)?->nombre;
