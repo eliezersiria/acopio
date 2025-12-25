@@ -76,7 +76,7 @@ class AcopioSemana extends Component
     public function getReporteProperty()
     {
         $inicio = microtime(true);
-
+        Carbon::setLocale('es');
         // Determinar el primer día de la semana según tipo_semana
         $hoy = now();
         switch ($this->tipo_semana) {
