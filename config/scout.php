@@ -135,7 +135,7 @@ return [
     | See: https://www.meilisearch.com/docs/learn/configuration/instance_options#all-instance-options
     |
     */
-
+    /*
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
@@ -145,7 +145,16 @@ return [
             // ],
         ],
     ],
-
+    */
+    'meilisearch' => [
+        'host' => env('MEILISEARCH_HOST', 'https://getmeilimeilisearchv190-production-c945.up.railway.app/'),
+        'key' => env('MEILISEARCH_KEY'),
+        'index-settings' => [
+            // 'users' => [
+            //     'filterableAttributes'=> ['id', 'name', 'email'],
+            // ],
+        ],
+    ],
     /*
     |--------------------------------------------------------------------------
     | Typesense Configuration
