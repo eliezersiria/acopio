@@ -21,7 +21,7 @@ class EditarLocalidad extends Component
         $localidad = Localidad::findOrFail($id);
         $this->localidad_id = $localidad->id;
         $this->nombre = $localidad->nombre;
-        $this->actualizado = $localidad->updated_at;
+        $this->actualizado = $localidad ? Carbon::parse($localidad->updated_at) : null;
         $this->creado = $localidad ? Carbon::parse($localidad->created_at) : null;
     }
     public function sendTrash($id)
