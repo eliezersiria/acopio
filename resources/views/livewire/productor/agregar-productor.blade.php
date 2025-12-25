@@ -1,6 +1,5 @@
 <div>
     {{-- Knowing others is intelligence; knowing yourself is true wisdom. --}}
-    <x-productor.tiempo-carga />
 
     <div class="border-l-4 border-primary pl-4 flex">
 

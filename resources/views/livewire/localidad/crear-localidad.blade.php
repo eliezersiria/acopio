@@ -1,6 +1,5 @@
 <div>
     {{-- Success is as dangerous as failure. --}}
-    <x-localidad.tiempo-carga />
 
     <div class="border-l-4 border-primary pl-4 p-4">
         <div class="border border-gray-300 p-4">

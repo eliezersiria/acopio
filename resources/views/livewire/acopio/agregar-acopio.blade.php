@@ -1,6 +1,5 @@
 <div>
-    {{-- To attain knowledge, add things every day; To attain wisdom, subtract things every day. --}}
-    <x-acopio.tiempo-carga />
+    {{-- To attain knowledge, add things every day; To attain wisdom, subtract things every day. --}}    
 
     <div class="border-l-4 border-primary pl-4 flex">
 

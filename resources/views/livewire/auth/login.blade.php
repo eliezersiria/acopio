@@ -65,7 +65,6 @@
                 <div class="divider"></div>
                 <p class="text-center text-sm">¿Olvidaste tu contraseña?
                     <a href="#" class="link link-primary">Recuperar</a>
-                    <x-login.login-tiempo-carga />
             </div>
         </div>
     </div>
