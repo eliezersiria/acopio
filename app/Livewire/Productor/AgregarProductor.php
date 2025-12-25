@@ -12,6 +12,9 @@ use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
+use Illuminate\Support\Facades\Storage;
+
+
 class AgregarProductor extends Component
 {
     use WithFileUploads;  // 👈 OBLIGATORIO para subir archivos
@@ -58,6 +61,7 @@ class AgregarProductor extends Component
                 // Redimensionar sin perder ratio
                 $image = $image->scaleDown(height: 192)->toWebp(70);
 
+                /*
                 // Asegurarse de que la carpeta exista
                 $directory = public_path('images/productores');
                 if (!file_exists($directory)) {
@@ -69,6 +73,15 @@ class AgregarProductor extends Component
 
                 // Guardar ruta para la base de datos
                 $path = "images/productores/$filename";
+                */
+                // Guardar la imagen en Railway Bucket usando Laravel Storage
+                $path = "productores/$filename"; // ruta dentro del bucket
+                Storage::disk('s3')->put($path, (string) $image);
+
+                // Generar URL temporal (válida 10 minutos)
+                $url = env('AWS_ENDPOINT') . '/' . $path;
+
+                // Obtener URL pública o pre-firmada para guardar en DB o mostrar                
             }
 
 
@@ -82,16 +95,15 @@ class AgregarProductor extends Component
                 'foto' => $path,
             ]);
             // Limpiar el campo
-            $this->reset(['nombre', 'cedula', 'telefono', 'localidad_id', 'direccion','semana','foto']);
+            $this->reset(['nombre', 'cedula', 'telefono', 'localidad_id', 'direccion', 'semana', 'foto']);
             // Mensaje de éxito
             session()->flash('status', 'Productor agregado correctamente');
+            session()->flash('image_url', $url);
         } catch (\Exception $e) {
 
 
             session()->flash('error', 'Ocurrió un error: ' . $e->getMessage());
-
         }
-
     }
     public function render()
     {
