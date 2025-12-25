@@ -5,6 +5,7 @@ namespace App\Livewire\Localidad;
 use Livewire\Component;
 use App\Models\Localidad;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class EditarLocalidad extends Component
 {
@@ -21,7 +22,7 @@ class EditarLocalidad extends Component
         $this->localidad_id = $localidad->id;
         $this->nombre = $localidad->nombre;
         $this->actualizado = $localidad->updated_at;
-        $this->creado = $localidad->created_at;
+        $this->creado = $localidad ? Carbon::parse($localidad->created_at) : null;
     }
     public function sendTrash($id)
     {
