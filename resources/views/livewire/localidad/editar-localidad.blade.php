@@ -1,6 +1,5 @@
 <div>
-    {{-- Success is as dangerous as failure. --}}
-    <x-localidad.tiempo-carga />
+    {{-- Success is as dangerous as failure. --}}    
 
     <div class="breadcrumbs text-sm p-4">
         <ul>
