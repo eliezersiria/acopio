@@ -4,7 +4,6 @@ namespace App\Livewire\Productor;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-
 use App\Models\Productor;
 
 class ListarProductor extends Component
