@@ -4,6 +4,7 @@ namespace App\Livewire\Acopio;
 
 use Livewire\Component;
 use App\Models\Acopio;
+use App\Models\Adelanto;
 use App\Models\Localidad;
 use App\Models\Productor;
 use App\Models\PrecioLecheSemanal;
@@ -23,7 +24,9 @@ class AcopioSemana extends Component
     public $litros;
     public $editando_precio_litro = null;
     public $precio_leche_semanal;
-
+    public $editando_adelantos = null;
+    public $cantidad = 0;
+    public $campo;
     public $tipo_semana;
 
 
@@ -174,7 +177,7 @@ class AcopioSemana extends Component
                     'litros'       => [],
                     'total_litros' => 0,
                     'precio_semanal' => $precio,
-                    'total_cordobas'     => 0,
+                    'total_cordobas' => 0,
                     'fecha_inicial' => $fechaInicial->format('Y-m-d'),
                     'deduccion_compra' => 0,
                     'total_efectivo' => 0,
@@ -306,6 +309,42 @@ class AcopioSemana extends Component
 
         $this->editando_precio_litro = null;
         $this->precio_leche_semanal = null;
+    }
+
+    public function editar_adelantos($productor_id, $fecha_inicial, $campo)
+    {
+        $this->editando_adelantos = [
+            'productor_id' => $productor_id,
+            'fecha' => $fecha_inicial,
+            'campo' => $campo,
+        ];
+        $this->campo = $campo;
+        $adelanto = Adelanto::where('productor_id', $productor_id)->where('fecha', $fecha_inicial)->first();        
+        $this->cantidad = intval($adelanto?->{$campo} ?? 0);
+    }
+
+    public function guardar_adelantos()
+    {
+        if (!$this->editando_adelantos || !$this->campo) {
+            return;
+        }
+
+        $productorId = $this->editando_adelantos['productor_id'];
+        $fecha       = $this->editando_adelantos['fecha'];
+        $campo       = $this->campo;
+        $valor       = $this->cantidad;
+
+        Adelanto::updateOrCreate(
+            [
+                'productor_id' => $productorId,
+                'fecha' => $fecha,
+            ],
+            [
+                $campo => $valor
+            ]
+        );
+        // Reset estado
+        $this->reset(['cantidad', 'campo', 'editando_adelantos']);
     }
 
     public function render()

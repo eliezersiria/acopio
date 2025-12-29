@@ -87,7 +87,7 @@
                     <td class="bg-gray-600 text-white sticky left-0 z-10 border border-gray-300 text-sm whitespace-nowrap">
                         {{ $fila['productor'] }}
                     </td>
-
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
                     @foreach ($dias as $dia)
                     @php $fecha = $dia->format('Y-m-d'); @endphp
                     <td class="border border-gray-300 text-sm text-center align-middle hover:bg-amber-500 hover:cursor-pointer hover:text-black"
@@ -115,11 +115,11 @@
 
                     </td>
                     @endforeach
-
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
                     <td class="border border-gray-300 text-sm text-center">
                         {{ $fila['total_litros'] ?? '0' }}
                     </td>
-
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
                     <td class="border border-gray-300 text-sm text-center hover:bg-amber-500 hover:text-black hover:cursor-pointer"
                         wire:click="editar_precio_semanal({{ $fila['productor_id'] }}, '{{ $fila['fecha_inicial'] }}')">
                         @if($editando_precio_litro &&
@@ -143,28 +143,135 @@
                         @endif
 
                     </td>
-
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
                     <td class="border border-gray-300 text-sm text-center">
                         {{ number_format($fila['total_cordobas']) ?? '0' }}
                     </td>
                     <td class="border border-gray-300 text-sm text-center">
                         {{ number_format($fila['deduccion_compra']) ?? '0' }}
                     </td>
-                    <td class="border border-gray-300 text-sm text-center">
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
+                    <td class="border border-gray-300 text-sm text-center hover:bg-amber-500 hover:text-black hover:cursor-pointer"
+                        wire:click="editar_adelantos({{ $fila['productor_id'] }},'{{ $fila['fecha_inicial'] }}','efectivo')">
+                        @if($editando_adelantos &&
+                        $editando_adelantos['productor_id'] == $fila['productor_id'] &&
+                        $editando_adelantos['fecha'] == $fila['fecha_inicial'] &&
+                        $editando_adelantos['campo'] === 'efectivo')
+
+                        <div x-data class="w-full h-full" @click.outside="$wire.guardar_adelantos()">
+
+                            <input type="number"
+                                class="w-full h-full border-0 text-center text-sm focus:outline-none focus:ring-0 hover:bg-base-300"
+                                wire:model.defer="cantidad"
+                                wire:keydown.enter="guardar_adelantos"
+                                wire:blur="guardar_adelantos"
+                                wire:keydown.escape="$set('guardar_adelantos', null)"
+                                x-ref="input_cantidad"
+                                x-init="$nextTick(() => { $refs.input_cantidad.focus(); $refs.input_cantidad.select() })">
+                        </div>
+                        @else
                         {{ number_format($fila['total_efectivo']) ?? '0' }}
+                        @endif
                     </td>
-                    <td class="border border-gray-300 text-sm text-center">
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
+                    <td class="border border-gray-300 text-sm text-center hover:bg-amber-500 hover:text-black hover:cursor-pointer"
+                        wire:click="editar_adelantos({{ $fila['productor_id'] }},'{{ $fila['fecha_inicial'] }}','combustible')">
+
+                        @if($editando_adelantos &&
+                        $editando_adelantos['productor_id'] == $fila['productor_id'] &&
+                        $editando_adelantos['fecha'] == $fila['fecha_inicial']&&
+                        $editando_adelantos['campo'] === 'combustible')
+
+                        <div x-data class="w-full h-full" @click.outside="$wire.guardar_adelantos()">
+
+                            <input type="number"
+                                class="w-full h-full border-0 text-center text-sm focus:outline-none focus:ring-0 hover:bg-base-300"
+                                wire:model.defer="cantidad"
+                                wire:keydown.enter="guardar_adelantos"
+                                wire:blur="guardar_adelantos"
+                                wire:keydown.escape="$set('guardar_adelantos', null)"
+                                x-ref="input_cantidad"
+                                x-init="$nextTick(() => { $refs.input_cantidad.focus(); $refs.input_cantidad.select() })">
+                        </div>
+                        @else
                         {{ number_format($fila['total_combustible']) ?? '0' }}
+                        @endif
                     </td>
-                    <td class="border border-gray-300 text-sm text-center">
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
+                    <td class="border border-gray-300 text-sm text-center hover:bg-amber-500 hover:text-black hover:cursor-pointer"
+                        wire:click="editar_adelantos({{ $fila['productor_id'] }},'{{ $fila['fecha_inicial'] }}','alimentos')">
+
+                        @if($editando_adelantos &&
+                        $editando_adelantos['productor_id'] == $fila['productor_id'] &&
+                        $editando_adelantos['fecha'] == $fila['fecha_inicial']&&
+                        $editando_adelantos['campo'] === 'alimentos')
+
+                        <div x-data class="w-full h-full" @click.outside="$wire.guardar_adelantos()">
+
+                            <input type="number"
+                                class="w-full h-full border-0 text-center text-sm focus:outline-none focus:ring-0 hover:bg-base-300"
+                                wire:model.defer="cantidad"
+                                wire:keydown.enter="guardar_adelantos"
+                                wire:blur="guardar_adelantos"
+                                wire:keydown.escape="$set('guardar_adelantos', null)"
+                                x-ref="input_cantidad"
+                                x-init="$nextTick(() => { $refs.input_cantidad.focus(); $refs.input_cantidad.select() })">
+                        </div>
+                        @else
                         {{ number_format($fila['total_alimentos']) ?? '0' }}
+                        @endif
                     </td>
-                    <td class="border border-gray-300 text-sm text-center">
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
+                    <td class="border border-gray-300 text-sm text-center hover:bg-amber-500 hover:text-black hover:cursor-pointer"
+                        wire:click="editar_adelantos({{ $fila['productor_id'] }},'{{ $fila['fecha_inicial'] }}','lacteos')">
+
+                        @if($editando_adelantos &&
+                        $editando_adelantos['productor_id'] == $fila['productor_id'] &&
+                        $editando_adelantos['fecha'] == $fila['fecha_inicial']&&
+                        $editando_adelantos['campo'] === 'lacteos')
+
+                        <div x-data class="w-full h-full" @click.outside="$wire.guardar_adelantos()">
+
+                            <input type="number"
+                                class="w-full h-full border-0 text-center text-sm focus:outline-none focus:ring-0 hover:bg-base-300"
+                                wire:model.defer="cantidad"
+                                wire:keydown.enter="guardar_adelantos"
+                                wire:blur="guardar_adelantos"
+                                wire:keydown.escape="$set('guardar_adelantos', null)"
+                                x-ref="input_cantidad"
+                                x-init="$nextTick(() => { $refs.input_cantidad.focus(); $refs.input_cantidad.select() })">
+                        </div>
+                        @else
                         {{ number_format($fila['total_lacteos']) ?? '0' }}
+                        @endif
                     </td>
-                    <td class="border border-gray-300 text-sm text-center">
-                        {{ number_format($fila['total_otros']) ?? '' }}
+
+                    {{-- ------------------------------------------------------------------------------------------------------- --}}
+                    <td class="border border-gray-300 text-sm text-center hover:bg-amber-500 hover:text-black hover:cursor-pointer"
+                        wire:click="editar_adelantos({{ $fila['productor_id'] }},'{{ $fila['fecha_inicial'] }}','otros')">
+
+                        @if($editando_adelantos &&
+                        $editando_adelantos['productor_id'] == $fila['productor_id'] &&
+                        $editando_adelantos['fecha'] == $fila['fecha_inicial']&&
+                        $editando_adelantos['campo'] === 'otros')
+
+                        <div x-data class="w-full h-full" @click.outside="$wire.guardar_adelantos()">
+
+                            <input type="number"
+                                class="w-full h-full border-0 text-center text-sm focus:outline-none focus:ring-0 hover:bg-base-300"
+                                wire:model.defer="cantidad"
+                                wire:keydown.enter="guardar_adelantos"
+                                wire:blur="guardar_adelantos"
+                                wire:keydown.escape="$set('guardar_adelantos', null)"
+                                x-ref="input_cantidad"
+                                x-init="$nextTick(() => { $refs.input_cantidad.focus(); $refs.input_cantidad.select() })">
+                        </div>
+                        @else
+                        {{ number_format($fila['total_otros']) ?? '0' }}
+                        @endif
                     </td>
+
+                    
                     <td class="border border-gray-300 text-sm text-center">
                         {{ number_format($fila['total_deducciones']) ?? '' }}
                     </td>
