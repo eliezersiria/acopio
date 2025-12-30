@@ -38,19 +38,19 @@
                     </th>
                     @endforeach
 
-                    <th class="border border-gray-300 text-left text-sm">
+                    <th class="border border-gray-300 text-left text-sm bg-lime-800 text-white">
                         Total litros
                     </th>
 
-                    <th class="border border-gray-300 py-3 text-sm">
+                    <th class="border border-gray-300 py-3 text-sm bg-yellow-700 text-white">
                         Precio litro
                     </th>
 
-                    <th class="border border-gray-300 text-sm">
+                    <th class="border border-gray-300 text-sm bg-lime-800 text-white">
                         Total córdobas
                     </th>
 
-                    <th class="border border-gray-300 text-sm">
+                    <th class="border border-gray-300 text-sm bg-red-900 text-white">
                         % Deducción compra
                     </th>
 
@@ -73,10 +73,10 @@
                     <th class="bg-cyan-800 text-white border border-gray-300 text-sm">
                         Otros
                     </th>
-                    <th class="border border-gray-300 text-sm">
+                    <th class="border border-gray-300 text-sm bg-red-900 text-white">
                         Deducciones
                     </th>
-                    <th class="border border-gray-300 text-sm">
+                    <th class="border border-gray-300 text-sm bg-green-900 text-white">
                         Neto a recibir
                     </th>
                 </tr>

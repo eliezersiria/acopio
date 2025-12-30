@@ -252,7 +252,6 @@ class AcopioSemana extends Component
         $this->litros = intval($acopio?->litros);
     }
 
-
     public function guardar()
     {
         if (!$this->editando) return;
@@ -328,7 +327,6 @@ class AcopioSemana extends Component
         if (!$this->editando_adelantos || !$this->campo) {
             return;
         }
-
         $productorId = $this->editando_adelantos['productor_id'];
         $fecha       = $this->editando_adelantos['fecha'];
         $campo       = $this->campo;
