@@ -25,5 +25,4 @@ Route::get('/productor-listar', [ProductorController::class, 'listar'])->name('p
 Route::get('/productor-editar/{id}', [ProductorController::class, 'editar'])->name('productor.editar')->middleware('auth');
 
 Route::get('/acopio-listar', [AcopioController::class, 'listar'])->name('acopio')->middleware('auth');
-Route::get('/acopio-agregar', [AcopioController::class, 'create'])->name('acopio.agregar')->middleware('auth');
-//Route::get('/acopio-listar', [AcopioController::class, 'listar'])->name('acopio.listar')->middleware('auth');
+Route::get('/acopio-resumen-semanal', [AcopioController::class, 'resumenSemanal'])->name('acopio.resumen.semanal')->middleware('auth');

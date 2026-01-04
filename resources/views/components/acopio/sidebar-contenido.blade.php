@@ -16,11 +16,11 @@
 </li>
 
 <li>
-    <a href="{{ route('acopio.agregar') }}" wire:navigate
-        class="hover:bg-base-300 hover:border-base-400 py-4 px-4 block border border-base-300 rounded-lg {{ Route::is('acopio.agregar') ? 'bg-primary text-white' : 'bg-base-100' }} shadow-sm hover:shadow-md transition-all duration-200">
+    <a href="{{ route('acopio.resumen.semanal') }}" wire:navigate
+        class="hover:bg-base-300 hover:border-base-400 py-4 px-4 block border border-base-300 rounded-lg {{ Route::is('acopio.resumen.semanal') ? 'bg-primary text-white' : 'bg-base-100' }} shadow-sm hover:shadow-md transition-all duration-200">
         <div class="flex items-center space-x-3">
             <img src="{{ asset('images/icons/tanque-de-leche-2.png') }}"/>
-            <span>Registrar Adelanto</span>
+            <span>Resumen Semanal</span>
         </div>
     </a>
 </li>

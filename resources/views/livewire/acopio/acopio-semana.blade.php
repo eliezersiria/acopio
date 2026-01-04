@@ -6,6 +6,13 @@
             Tiempo de consulta: {{ $tiempo }} segundos | Registros cargados: {{ $numeroFilas }}
         </p>
 
+        <p>
+            <label class="label">Seleccione fecha</label>
+        </p>
+        <p>
+            <input type="date" class="input" wire:model.live="fechaReporte" name="fechaReporte" />
+        </p>
+
         <p>{{ $textoSemana }} </p>
     </div>
 
@@ -271,7 +278,7 @@
                         @endif
                     </td>
 
-                    
+
                     <td class="border border-gray-300 text-sm text-center">
                         {{ number_format($fila['total_deducciones']) ?? '' }}
                     </td>

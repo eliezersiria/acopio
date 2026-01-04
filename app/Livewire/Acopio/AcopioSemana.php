@@ -28,26 +28,35 @@ class AcopioSemana extends Component
     public $cantidad = 0;
     public $campo;
     public $tipo_semana;
-
+    public $fechaReporte;
 
     protected $queryString = [
         'localidad_id' => ['except' => null],
-        'tipo_semana' => ['except' => null]
+        'tipo_semana' => ['except' => null],
+        'fechaReporte' => ['except' => null],
     ];
 
     public function mount()
     {
         Carbon::setLocale('es');
+
         $this->comarcas = Localidad::all();
-        // Default localidad y tipo_semana
+
+        // Localidad por defecto SOLO si no viene en URL
         $this->localidad_id ??= $this->comarcas->first()?->id;
         $this->localidad = Localidad::find($this->localidad_id)?->nombre;
+
+        // Tipo de semana SOLO si no viene en URL
         $this->tipo_semana ??= 'A';
+
+        // Fecha SOLO si no viene en URL
+        $this->fechaReporte ??= now()->format('Y-m-d');
     }
     // Propiedad computada: texto de la semana
     public function getTextoSemanaProperty()
     {
-        $hoy = now();
+        $hoy = Carbon::parse($this->fechaReporte);
+
         $fechaInicial = match ($this->tipo_semana) {
             'A' => $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY),
             'B' => $hoy->copy()->startOfWeek(CarbonInterface::FRIDAY),
@@ -81,7 +90,7 @@ class AcopioSemana extends Component
         $inicio = microtime(true);
         Carbon::setLocale('es');
         // Determinar el primer día de la semana según tipo_semana
-        $hoy = now();
+        $hoy = Carbon::parse($this->fechaReporte);
         switch ($this->tipo_semana) {
             case 'A':
                 $fechaInicial = $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY);
@@ -318,7 +327,7 @@ class AcopioSemana extends Component
             'campo' => $campo,
         ];
         $this->campo = $campo;
-        $adelanto = Adelanto::where('productor_id', $productor_id)->where('fecha', $fecha_inicial)->first();        
+        $adelanto = Adelanto::where('productor_id', $productor_id)->where('fecha', $fecha_inicial)->first();
         $this->cantidad = intval($adelanto?->{$campo} ?? 0);
     }
 
