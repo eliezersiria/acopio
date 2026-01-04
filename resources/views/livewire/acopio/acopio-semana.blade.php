@@ -9,9 +9,10 @@
         <p>
             <label class="label">Seleccione fecha</label>
         </p>
-        <p>
-            <input type="date" class="input" wire:model.live="fechaReporte" name="fechaReporte" />
-        </p>
+        <div class="flex items-center gap-2">
+            <input type="date" class="input" wire:model.live="fechaReporte">
+            <span class="loading loading-spinner" wire:loading wire:target="fechaReporte"></span>
+        </div>
 
         <p>{{ $textoSemana }} </p>
     </div>
@@ -19,6 +20,7 @@
     <div role="tablist" class="tabs tabs-border">
         <a role="tab" class="tab {{ $tipo_semana == 'A'? 'bg-primary font-bold text-white' : '' }}" wire:click="cambiarTipoSemana('A')">Grupo A</a>
         <a role="tab" class="tab {{ $tipo_semana == 'B'? 'bg-primary font-bold text-white' : '' }}" wire:click="cambiarTipoSemana('B')">Grupo B</a>
+        <span class="loading loading-spinner" wire:loading wire:target="cambiarTipoSemana"></span>
     </div>
 
     <div role="tablist" class="tabs tabs-box">
@@ -28,6 +30,7 @@
             {{ $comarca->nombre }}
         </a>
         @endforeach
+        <span class="loading loading-spinner" wire:loading wire:target="cambiarComarca"></span>
     </div>
 
     <div class="overflow-x-auto">
