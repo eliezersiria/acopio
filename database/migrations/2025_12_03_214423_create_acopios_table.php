@@ -13,7 +13,8 @@ return new class extends Migration {
         Schema::create('acopios', function (Blueprint $table) {
             $table->id();
             // Relación con productor
-            $table->foreignId('productor_id')->constrained('productors')->restrictOnDelete()->cascadeOnUpdate();           
+            $table->foreignId('productor_id')->constrained('productors')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignId('localidad_id')->constrained('localidads')->restrictOnDelete()->cascadeOnUpdate();
 
             // Fecha y hora de la entrega
             $table->date('fecha');
@@ -21,12 +22,7 @@ return new class extends Migration {
 
             // Cantidad entregada
             $table->decimal('litros', 10, 2)->nullable();
-
-            // Precio por litro en el día de la entrega
-            $table->decimal('precio_litro', 10, 2)->nullable();
-
-            // Total calculado del pago
-            $table->decimal('total_pagado', 12, 2)->nullable();
+            
             $table->text('observaciones')->nullable();
             $table->softDeletes();
             $table->timestamps();

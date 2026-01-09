@@ -183,6 +183,7 @@ class AcopioSemana extends Component
                 $reporte[$clave] = [
                     'productor_id' => $productor->id,
                     'productor'    => $productor->nombre,
+                    'localidad_id' => $productor->localidad_id,
                     'litros'       => [],
                     'total_litros' => 0,
                     'precio_semanal' => $precio,
@@ -250,11 +251,12 @@ class AcopioSemana extends Component
         $this->tipo_semana = $type_week;
     }
 
-    public function editar($productor_id, $fecha)
+    public function editar($productor_id, $fecha, $localidad_id)
     {
         $this->editando = [
             'productor_id' => $productor_id,
             'fecha' => $fecha,
+            'localidad_id' => $localidad_id
         ];
 
         $acopio = Acopio::where($this->editando)->first();
@@ -267,6 +269,7 @@ class AcopioSemana extends Component
 
         $productorId = $this->editando['productor_id'];
         $fecha       = $this->editando['fecha'];
+        $localidad_id = $this->editando['localidad_id'];
         $this->litros = intval($this->litros);
 
         if ($this->litros >= 0) {
@@ -276,6 +279,7 @@ class AcopioSemana extends Component
                     'fecha' => $fecha,
                 ],
                 [
+                    'localidad_id' => $localidad_id,
                     'litros' => $this->litros,
                     'hora' => now()->format('H:i:s'),
                 ]
@@ -286,34 +290,38 @@ class AcopioSemana extends Component
         $this->litros = null;
     }
 
-    public function editar_precio_semanal($productor_id, $fecha_inicial)
+    public function editar_precio_semanal($productor_id, $fecha_inicial, $localidad_id)
     {
         $this->editando_precio_litro = [
             'productor_id' => $productor_id,
             'fecha_inicio' => $fecha_inicial,
+            'localidad_id' => $localidad_id
         ];
-        $precio = PrecioLecheSemanal::where($this->editando_precio_litro)->first();
+
+        $precio = PrecioLecheSemanal::where('productor_id', $productor_id)->where('fecha_inicio', $fecha_inicial)->first();
         $this->precio_leche_semanal = intval($precio?->precio);
     }
 
     public function guardar_precio_semanal_litro()
     {
-        if (!$this->editando_precio_litro) return;
+        if (!$this->editando_precio_litro) return;        
 
         $productorId = $this->editando_precio_litro['productor_id'];
         $fecha       = $this->editando_precio_litro['fecha_inicio'];
+        $localidad_id = $this->editando_precio_litro['localidad_id'];
         $this->precio_leche_semanal = intval($this->precio_leche_semanal);
 
-        PrecioLecheSemanal::updateOrCreate(
+        $consulta = PrecioLecheSemanal::updateOrCreate(
             [
                 'productor_id' => $productorId,
                 'fecha_inicio' => $fecha,
             ],
             [
+                'localidad_id' => $localidad_id,
                 'precio' => $this->precio_leche_semanal,
                 'fecha_inicio' => $fecha,
             ]
-        );
+        );       
 
         $this->editando_precio_litro = null;
         $this->precio_leche_semanal = null;

@@ -11,6 +11,7 @@ class PrecioLecheSemanal extends Model
 
     protected $fillable = [
         'productor_id',
+        'localidad_id',
         'precio',
         'fecha_inicio',
     ];
@@ -19,5 +20,10 @@ class PrecioLecheSemanal extends Model
     public function productor()
     {
         return $this->belongsTo(Productor::class);
+    }
+
+    public function localidad()
+    {
+        return $this->belongsTo(Localidad::class);
     }
 }

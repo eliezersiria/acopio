@@ -101,7 +101,7 @@
                     @foreach ($dias as $dia)
                     @php $fecha = $dia->format('Y-m-d'); @endphp
                     <td class="border border-gray-300 text-sm text-center align-middle hover:bg-amber-500 hover:cursor-pointer hover:text-black"
-                        wire:click="editar({{ $fila['productor_id'] }}, '{{ $fecha }}')">
+                        wire:click="editar({{ $fila['productor_id'] }}, '{{ $fecha }}', '{{ $fila['localidad_id'] }}')">
                         @if($editando &&
                         $editando['productor_id'] == $fila['productor_id'] &&
                         $editando['fecha'] == $fecha)
@@ -131,11 +131,11 @@
                     </td>
                     {{-- ------------------------------------------------------------------------------------------------------- --}}
                     <td class="border border-gray-300 text-sm text-center hover:bg-amber-500 hover:text-black hover:cursor-pointer"
-                        wire:click="editar_precio_semanal({{ $fila['productor_id'] }}, '{{ $fila['fecha_inicial'] }}')">
+                        wire:click="editar_precio_semanal({{ $fila['productor_id'] }}, '{{ $fila['fecha_inicial'] }}', '{{ $fila['localidad_id'] }}')">
                         @if($editando_precio_litro &&
                         $editando_precio_litro['productor_id'] == $fila['productor_id'] &&
                         $editando_precio_litro['fecha_inicio'] == $fila['fecha_inicial'])
-
+                        
                         <div x-data class="w-full h-full" @click.outside="$wire.guardar_precio_semanal_litro()">
 
                             <input type="number"
@@ -147,9 +147,10 @@
                                 name="precio_leche_semanal"
                                 x-ref="input_precio_leche"
                                 x-init="$nextTick(() => { $refs.input_precio_leche.focus(); $refs.input_precio_leche.select() })">
+                                
                         </div>
                         @else
-                        {{ intval($fila['precio_semanal']) ?? '0' }}
+                        {{ intval($fila['precio_semanal']) ?? '0' }}                        
                         @endif
 
                     </td>

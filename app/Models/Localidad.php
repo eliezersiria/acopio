@@ -14,16 +14,12 @@ class Localidad extends Model
     {
         return $this->hasMany(Productor::class);
     }
-
     public function acopios()
     {
-        return $this->hasManyThrough(
-            Acopio::class,
-            Productor::class,
-            'localidad_id', // FK en productores
-            'productor_id', // FK en acopios
-            'id',
-            'id'
-        );
+        return $this->hasMany(Acopio::class);
+    }
+    public function precioSemanal()
+    {
+        return $this->hasMany(PrecioLecheSemanal::class);
     }
 }

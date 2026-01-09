@@ -14,15 +14,13 @@ return new class extends Migration
         Schema::create('precio_leche_semanals', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('productor_id');
+            $table->unsignedBigInteger('localidad_id');
             $table->decimal('precio', 8, 2);
             $table->date('fecha_inicio');
             $table->timestamps();
             // Foreign key sin cascada
-            $table->foreign('productor_id')
-                ->references('id')
-                ->on('productors')
-                ->restrictOnDelete()
-                ->restrictOnUpdate();
+            $table->foreign('productor_id')->references('id')->on('productors')->restrictOnDelete()->restrictOnUpdate();
+            $table->foreign('localidad_id')->references('id')->on('localidads')->restrictOnDelete()->restrictOnUpdate();
         });
     }
 

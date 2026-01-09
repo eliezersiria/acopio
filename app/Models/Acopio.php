@@ -26,5 +26,9 @@ class Acopio extends Model
     {
         return $this->belongsTo(Localidad::class);
     }
-}
 
+    public function localidad()
+    {
+        return $this->belongsTo(Localidad::class);
+    }
+}
