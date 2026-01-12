@@ -6,7 +6,7 @@
         </p>
 
         <p>
-            <label class="label">Seleccione fecha</label>
+            <label class="label">Seleccionar fecha</label>
         </p>
         <div class="flex items-center gap-2">
             <input type="date" class="input" wire:model.live="fechaReporte">
