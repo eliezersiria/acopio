@@ -31,6 +31,11 @@ class AcopioController extends Controller
     {
         return view('acopio.listar-acopio');
     }
+
+    public function recibos()
+    {
+        return view('acopio.receipts');
+    }
     /**
      * Store a newly created resource in storage.
      */

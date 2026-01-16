@@ -15,22 +15,23 @@
         </div>
 
         <p>{{ $textoSemana }} </p>
-    </div>
 
-    <div role="tablist" class="tabs tabs-border">
-        <a role="tab" class="tab {{ $tipo_semana == 'A'? 'bg-primary font-bold text-white' : '' }}" wire:click="cambiarTipoSemana('A')">Grupo A</a>
-        <a role="tab" class="tab {{ $tipo_semana == 'B'? 'bg-primary font-bold text-white' : '' }}" wire:click="cambiarTipoSemana('B')">Grupo B</a>
-        <span class="loading loading-spinner" wire:loading wire:target="cambiarTipoSemana"></span>
-    </div>
+        <div role="tablist" class="tabs tabs-border">
+            <a role="tab" class="tab {{ $tipo_semana == 'A'? 'bg-primary font-bold text-white' : '' }}" wire:click="cambiarTipoSemana('A')">Grupo A</a>
+            <a role="tab" class="tab {{ $tipo_semana == 'B'? 'bg-primary font-bold text-white' : '' }}" wire:click="cambiarTipoSemana('B')">Grupo B</a>
+            <span class="loading loading-spinner" wire:loading wire:target="cambiarTipoSemana"></span>
+        </div>
 
-    <div role="tablist" class="tabs tabs-box">
-        @foreach ($comarcas as $comarca)
-        <a role="tab" class="tab transition{{ $comarca->id == $localidad_id? 'tab-active font-bold text-white bg-lime-700' : '' }}"
-            wire:navigate wire:click="cambiarComarca({{ $comarca->id }})">
-            {{ $comarca->nombre }}
-        </a>
-        @endforeach
-        <span class="loading loading-spinner" wire:loading wire:target="cambiarComarca"></span>
+        <div role="tablist" class="tabs tabs-box">
+            @foreach ($comarcas as $comarca)
+            <a role="tab" class="tab transition{{ $comarca->id == $localidad_id? 'tab-active font-bold text-white bg-lime-700' : '' }}"
+                wire:navigate wire:click="cambiarComarca({{ $comarca->id }})">
+                {{ $comarca->nombre }}
+            </a>
+            @endforeach
+            <span class="loading loading-spinner" wire:loading wire:target="cambiarComarca"></span>
+        </div>
+
     </div>
 
     <div class="overflow-x-auto">
@@ -135,7 +136,7 @@
                         @if($editando_precio_litro &&
                         $editando_precio_litro['productor_id'] == $fila['productor_id'] &&
                         $editando_precio_litro['fecha_inicio'] == $fila['fecha_inicial'])
-                        
+
                         <div x-data class="w-full h-full" @click.outside="$wire.guardar_precio_semanal_litro()">
 
                             <input type="number"
@@ -147,10 +148,10 @@
                                 name="precio_leche_semanal"
                                 x-ref="input_precio_leche"
                                 x-init="$nextTick(() => { $refs.input_precio_leche.focus(); $refs.input_precio_leche.select() })">
-                                
+
                         </div>
                         @else
-                        {{ intval($fila['precio_semanal']) ?? '0' }}                        
+                        {{ intval($fila['precio_semanal']) ?? '0' }}
                         @endif
 
                     </td>

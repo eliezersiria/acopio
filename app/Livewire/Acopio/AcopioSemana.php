@@ -104,13 +104,7 @@ class AcopioSemana extends Component
                 $fechaInicial = $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY);
                 break;
         }
-        $fechaFinal = $fechaInicial->copy()->addDays(6);
-
-        // Generar array de días
-        $this->dias = [];
-        for ($i = 0; $i < 7; $i++) {
-            $this->dias[] = $fechaInicial->copy()->addDays($i);
-        }
+        $fechaFinal = $fechaInicial->copy()->addDays(6);        
 
         //Consulta de productores y acopios
         $productores = Productor::with([

@@ -29,7 +29,7 @@
             <thead>
                 <tr>
                     <th class="border border-gray-300 sticky left-0 bg-cyan-800 text-white z-10">
-                        Localidad
+                        Comarca
                     </th>
 
                     @foreach ($dias as $dia)
@@ -38,18 +38,18 @@
                     </th>
                     @endforeach
 
-                    <th class="border border-gray-300">Total Litros</th>
-                    <th class="border border-gray-300">Total C$</th>
-                    <th class="border border-gray-300">% Deducción</th>
+                    <th class="bg-lime-800 text-white border border-gray-300">Total entregados</th>
+                    <th class="bg-yellow-700 text-white border border-gray-300">Total C$</th>
+                    <th class="bg-red-900 text-white border border-gray-300">% Deducción</th>
 
-                    <th class="border border-gray-300">Efectivo</th>
-                    <th class="border border-gray-300">Comb.</th>
-                    <th class="border border-gray-300">Alim.</th>
-                    <th class="border border-gray-300">Láct.</th>
-                    <th class="border border-gray-300">Otros</th>
+                    <th class="bg-cyan-800 text-white border border-gray-300">Efectivo</th>
+                    <th class="bg-cyan-800 text-white border border-gray-300">Comb.</th>
+                    <th class="bg-cyan-800 text-white border border-gray-300">Alim.</th>
+                    <th class="bg-cyan-800 text-white border border-gray-300">Láct.</th>
+                    <th class="bg-cyan-800 text-white border border-gray-300">Otros</th>
 
-                    <th class="border border-gray-300">Total Deducciones</th>
-                    <th class="border border-gray-300">Neto a Recibir</th>
+                    <th class="bg-red-900 text-white border border-gray-300">Total Deducciones</th>
+                    <th class="bg-green-900 text-white border border-gray-300">Neto a Recibir</th>
                 </tr>
             </thead>
 
@@ -74,49 +74,49 @@
                     </td>
 
                     @foreach ($dias as $dia)
-                    <td class="border border-gray-300 text-right">
+                    <td class="border border-gray-300 text-center">
                         {{ number_format($localidad['litros_por_dia'][$dia] ?? 0, 0) }}
                     </td>
                     @endforeach
 
-                    <td class="border border-gray-300 text-right font-semibold">
+                    <td class="border border-gray-300 text-center">
                         {{ number_format($localidad['total_litros'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right">
+                    <td class="border border-gray-300 text-center">
                         {{ number_format($localidad['total_cordobas'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right">
+                    <td class="border border-gray-300 text-center">
                         {{ number_format($localidad['deduccion_compra'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right">
+                    <td class="border border-gray-300 text-center">
                         {{ number_format($localidad['total_efectivo'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right">
-                        {{ number_format($localidad['total_combustible'], 2) }}
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($localidad['total_combustible'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right">
-                        {{ number_format($localidad['total_alimentos'], 2) }}
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($localidad['total_alimentos'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right">
-                        {{ number_format($localidad['total_lacteos'], 2) }}
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($localidad['total_lacteos'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right">
-                        {{ number_format($localidad['total_otros'], 2) }}
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($localidad['total_otros'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right font-semibold">
-                        {{ number_format($localidad['total_deducciones'], 2) }}
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($localidad['total_deducciones'], 0) }}
                     </td>
 
-                    <td class="border border-gray-300 text-right font-bold">
-                        {{ number_format($localidad['neto_recibir'], 2) }}
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($localidad['neto_recibir'], 0) }}
                     </td>
                 </tr>
 
@@ -135,28 +135,71 @@
                 @endforeach
             </tbody>
 
-            <tfoot>
-                <tr class="bg-gray-900 text-white font-bold">
-                    <td class="border border-gray-300 sticky left-0 bg-gray-900">
-                        TOTALES
+            <foot>
+                <tr class="bg-gray-900">
+                    <td class="bg-gray-800 text-xs text-white border border-gray-300 sticky left-0 whitespace-nowrap">
+                        Total Recibido en Campo
                     </td>
 
                     @foreach ($dias as $dia)
-                    <td></td>
+                    <td class="border border-gray-300 text-center text-white">
+                        {{ number_format($totalesPorDia[$dia] ?? 0, 0) }}
+                    </td>
                     @endforeach
 
-                    <td class="text-right">{{ number_format($tgLitros, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgCordobas, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgDeduccion, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgEfectivo, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgCombustible, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgAlimentos, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgLacteos, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgOtros, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgTotalDeducciones, 2) }}</td>
-                    <td class="text-right">{{ number_format($tgNeto, 2) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgLitros, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgCordobas, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgDeduccion, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgEfectivo, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgCombustible, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgAlimentos, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgLacteos, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgOtros, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgTotalDeducciones, 0) }}</td>
+                    <td class="border border-gray-300 text-center text-white">{{ number_format($tgNeto, 0) }}</td>
                 </tr>
-            </tfoot>
+
+                <tr>
+                    <td class="bg-gray-800 text-white border border-gray-300 sticky left-0 whitespace-nowrap text-xs">
+                        Total Recibido en Acopio
+                    </td>
+
+                    @foreach ($dias as $dia)
+                    <td class="border border-gray-300 text-white text-center">
+
+                    </td>
+                    @endforeach
+
+                </tr>
+
+                <tr>
+                    <td class="bg-gray-800 text-white border border-gray-300 sticky left-0 whitespace-nowrap text-xs">
+                        Litros Perdidos en Ruta
+                    </td>
+
+                    @foreach ($dias as $dia)
+                    <td class="border border-gray-300 text-white text-center">
+
+                    </td>
+                    @endforeach
+
+
+                </tr>
+
+                <tr>
+                    <td class="bg-gray-800 text-white border border-gray-300 sticky left-0 whitespace-nowrap text-xs">
+                        % de litros Perdidos
+                    </td>
+
+                    @foreach ($dias as $dia)
+                    <td class="border border-gray-300 text-center text-white">
+
+                    </td>
+                    @endforeach
+
+
+                </tr>
+            </foot>
         </table>
     </div>
 </div>

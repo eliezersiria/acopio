@@ -18,10 +18,11 @@ class ResumenSemanal extends Component
     public $numeroFilas;
     public $tiempo;
     public $fechaReporte;
+    public $totalesPorDia = [];
 
     protected $queryString = [
         //'localidad_id' => ['except' => null],
-        //'tipo_semana' => ['except' => null],
+        'tipo_semana' => ['except' => null],
         'fechaReporte' => ['except' => null],
     ];
 
@@ -41,7 +42,7 @@ class ResumenSemanal extends Component
 
     public function getTextoSemanaProperty()
     {
-        $hoy = Carbon::parse($this->fechaReporte);        
+        $hoy = Carbon::parse($this->fechaReporte);
 
         $fechaInicial = match ($this->tipo_semana) {
             'A' => $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY),
@@ -154,6 +155,9 @@ class ResumenSemanal extends Component
 
         $reporte = [];
 
+        // Inicializar totales generales
+        $this->totalesPorDia = array_fill_keys($this->dias, 0);
+
         foreach ($productores as $productor) {
 
             $localidadId = $productor->localidad_id;
@@ -186,6 +190,9 @@ class ResumenSemanal extends Component
                 $reporte[$localidadId]['litros_por_dia'][$fecha] += $litros;
                 $reporte[$localidadId]['total_litros'] += $litros;
                 $reporte[$localidadId]['total_cordobas'] += $litros * $precio;
+
+                // 👉 TOTAL GENERAL POR DÍA
+                $this->totalesPorDia[$fecha] += $litros;
             }
 
             // Adelantos
