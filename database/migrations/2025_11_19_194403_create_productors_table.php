@@ -21,7 +21,8 @@ return new class extends Migration {
             $table->string('telefono', 20)->nullable();
             $table->string('direccion')->nullable();            
             $table->boolean('activo')->default(true);
-            $table->string('semana',3);
+            $table->enum('semana', ['A', 'B']);
+            //$table->string('semana',3);
             $table->string('foto')->nullable();
             $table->timestamps();
             $table->softDeletes();

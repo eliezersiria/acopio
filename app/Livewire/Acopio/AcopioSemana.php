@@ -8,6 +8,7 @@ use App\Models\Adelanto;
 use App\Models\Localidad;
 use App\Models\Productor;
 use App\Models\PrecioLecheSemanal;
+use App\Models\totalDiarioAcopio;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -29,6 +30,12 @@ class AcopioSemana extends Component
     public $campo;
     public $tipo_semana;
     public $fechaReporte;
+    public $totalesPorDia;
+    public $fechaInicial;
+    public $fechaFinal;
+    public $editandoAcopio = [];
+    public $litrosAcopio = 0;
+    public $totalesAcopio = [];
 
     protected $queryString = [
         'localidad_id' => ['except' => null],
@@ -51,60 +58,77 @@ class AcopioSemana extends Component
 
         // Fecha SOLO si no viene en URL
         $this->fechaReporte ??= now()->format('Y-m-d');
+
+        // 🔥 CALCULAR SEMANA UNA SOLA VEZ
+        $this->calcularSemana();
+
+        $this->cargarTotalesAcopio();
     }
-    // Propiedad computada: texto de la semana
-    public function getTextoSemanaProperty()
+
+    protected function cargarTotalesAcopio()
+    {
+        $this->totalesAcopio = totalDiarioAcopio::where('localidad_id', $this->localidad_id)
+            ->where('tipo_semana', $this->tipo_semana)
+            ->whereBetween('fecha', [$this->fechaInicial->format('Y-m-d'), $this->fechaFinal->format('Y-m-d')])
+            ->pluck('litros', 'fecha')
+            ->toArray();
+    }
+
+    protected function calcularSemana()
     {
         $hoy = Carbon::parse($this->fechaReporte);
 
-        $fechaInicial = match ($this->tipo_semana) {
+        $this->fechaInicial = match ($this->tipo_semana) {
             'A' => $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY),
             'B' => $hoy->copy()->startOfWeek(CarbonInterface::FRIDAY),
             default => $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY),
         };
 
-        $fechaFinal = $fechaInicial->copy()->addDays(6);
+        $this->fechaFinal = $this->fechaInicial->copy()->addDays(6);
 
-        // Generar los días de la semana
         $this->dias = [];
         for ($i = 0; $i < 7; $i++) {
-            $this->dias[] = $fechaInicial->copy()->addDays($i);
+            $this->dias[] = $this->fechaInicial->copy()->addDays($i);
         }
+
+        // Inicializar totales
+        $this->totalesPorDia = [];
+        foreach ($this->dias as $dia) {
+            $this->totalesPorDia[$dia->format('Y-m-d')] = 0;
+        }
+    }
+
+    // Propiedad computada: texto de la semana
+    public function getTextoSemanaProperty()
+    {
+        $fechaInicial = $this->fechaInicial;
+        $fechaFinal   = $this->fechaFinal;
 
         if ($fechaInicial->format('m-Y') === $fechaFinal->format('m-Y')) {
             return 'Semana del ' . $fechaInicial->format('d')
                 . ' al ' . $fechaFinal->format('d')
                 . ' de ' . $fechaInicial->locale('es')->isoFormat('MMMM');
-        } else {
-            return 'Semana del ' . $fechaInicial->format('d') . ' '
-                . $fechaInicial->locale('es')->isoFormat('MMMM')
-                . ' al ' . $fechaFinal->format('d') . ' '
-                . $fechaFinal->locale('es')->isoFormat('MMMM') . ' '
-                . $fechaFinal->format('Y');
         }
+
+        return 'Semana del ' . $fechaInicial->format('d') . ' '
+            . $fechaInicial->locale('es')->isoFormat('MMMM')
+            . ' al ' . $fechaFinal->format('d') . ' '
+            . $fechaFinal->locale('es')->isoFormat('MMMM') . ' '
+            . $fechaFinal->format('Y');
     }
 
     // Propiedad computada para el reporte
     public function getReporteProperty()
     {
         $inicio = microtime(true);
-        Carbon::setLocale('es');
-        // Determinar el primer día de la semana según tipo_semana
-        $hoy = Carbon::parse($this->fechaReporte);
-        switch ($this->tipo_semana) {
-            case 'A':
-                $fechaInicial = $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY);
-                break;
 
-            case 'B':
-                $fechaInicial = $hoy->copy()->startOfWeek(CarbonInterface::FRIDAY);
-                break;
+        $fechaInicial = $this->fechaInicial;
+        $fechaFinal   = $this->fechaFinal;
 
-            default:
-                $fechaInicial = $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY);
-                break;
+        // Reiniciar totales (importantísimo)
+        foreach ($this->totalesPorDia as $fecha => $valor) {
+            $this->totalesPorDia[$fecha] = 0;
         }
-        $fechaFinal = $fechaInicial->copy()->addDays(6);        
 
         //Consulta de productores y acopios
         $productores = Productor::with([
@@ -165,7 +189,6 @@ class AcopioSemana extends Component
             })
             ->get();
 
-
         $reporte = [];
 
         foreach ($productores as $productor) {
@@ -202,6 +225,11 @@ class AcopioSemana extends Component
                 $reporte[$clave]['litros'][$fecha] = $litros;
                 // Sumar litros totales
                 $reporte[$clave]['total_litros'] += $litros;
+
+                // ✅ TOTAL GENERAL POR DÍA
+                if (isset($this->totalesPorDia[$fecha])) {
+                    $this->totalesPorDia[$fecha] += $litros;
+                }
             }
             // Calcular monto total UNA VEZ después de sumar todos los litros
             $reporte[$clave]['total_cordobas'] = $reporte[$clave]['total_litros'] * $precio;
@@ -234,15 +262,21 @@ class AcopioSemana extends Component
         return $reporte;
     }
 
+    public function updatedFechaReporte()
+    {
+        $this->calcularSemana();
+    }
     public function cambiarComarca($comarca_id)
     {
         $this->localidad_id = $comarca_id;
         $this->localidad = Localidad::find($comarca_id)?->nombre;
+        $this->cargarTotalesAcopio();
     }
 
     public function cambiarTipoSemana($type_week)
     {
         $this->tipo_semana = $type_week;
+        $this->cargarTotalesAcopio();
     }
 
     public function editar($productor_id, $fecha, $localidad_id)
@@ -298,14 +332,14 @@ class AcopioSemana extends Component
 
     public function guardar_precio_semanal_litro()
     {
-        if (!$this->editando_precio_litro) return;        
+        if (!$this->editando_precio_litro) return;
 
         $productorId = $this->editando_precio_litro['productor_id'];
         $fecha       = $this->editando_precio_litro['fecha_inicio'];
         $localidad_id = $this->editando_precio_litro['localidad_id'];
         $this->precio_leche_semanal = intval($this->precio_leche_semanal);
 
-        $consulta = PrecioLecheSemanal::updateOrCreate(
+        PrecioLecheSemanal::updateOrCreate(
             [
                 'productor_id' => $productorId,
                 'fecha_inicio' => $fecha,
@@ -315,7 +349,7 @@ class AcopioSemana extends Component
                 'precio' => $this->precio_leche_semanal,
                 'fecha_inicio' => $fecha,
             ]
-        );       
+        );
 
         $this->editando_precio_litro = null;
         $this->precio_leche_semanal = null;
@@ -354,6 +388,41 @@ class AcopioSemana extends Component
         );
         // Reset estado
         $this->reset(['cantidad', 'campo', 'editando_adelantos']);
+    }
+
+    public function editarAcopio($fecha)
+    {
+        $this->editandoAcopio = [
+            'fecha' => $fecha,
+            'localidad_id' => $this->localidad_id,
+            'tipo_semana' => $this->tipo_semana
+        ];
+
+        $registro = totalDiarioAcopio::where('fecha', $fecha)
+            ->where('localidad_id', $this->localidad_id)
+            ->where('tipo_semana', $this->tipo_semana)
+            ->first();
+
+        $this->litrosAcopio = $registro->litros ?? 0;
+    }
+
+    public function guardarAcopio($fecha)
+    {
+        totalDiarioAcopio::updateOrCreate(
+            [
+                'fecha' => $fecha,
+                'localidad_id' => $this->localidad_id,
+                'tipo_semana' => $this->tipo_semana,
+            ],
+            [
+                'litros' => $this->litrosAcopio,
+            ]
+        );
+
+        // Actualizar la variable que se muestra en la tabla
+        $this->totalesAcopio[$fecha] = $this->litrosAcopio;
+        $this->editandoAcopio = null;
+        //$this->litrosAcopio = 0;
     }
 
     public function render()

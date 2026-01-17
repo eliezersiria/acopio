@@ -10,7 +10,7 @@
             <label class="label">Seleccione fecha</label>
         </p>
         <div class="flex items-center gap-2">
-            <input type="date" class="input" wire:model.live="fechaReporte">
+            <input type="date" class="input" wire:model.lazy="fechaReporte">
             <span class="loading loading-spinner" wire:loading wire:target="fechaReporte"></span>
         </div>
 
@@ -50,7 +50,7 @@
                     @endforeach
 
                     <th class="border border-gray-300 text-left text-sm bg-lime-800 text-white">
-                        Total litros
+                        Total entregados
                     </th>
 
                     <th class="border border-gray-300 py-3 text-sm bg-yellow-700 text-white">
@@ -292,6 +292,82 @@
                     </td>
                 </tr>
                 @endforeach
+
+                <tr>
+                    <td class="bg-gray-800 text-white sticky left-0 z-10 border border-gray-300 text-left text-xs whitespace-nowrap">
+                        Total Recibido en Campo
+                    </td>
+                    @foreach ($dias as $dia)
+                    @php $fecha = $dia->format('Y-m-d'); @endphp
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalesPorDia[$fecha] ?? 0) }}
+                    </td>
+                    @endforeach
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format(array_sum($totalesPorDia)) }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="bg-gray-800 text-white sticky left-0 z-10 border border-gray-300 text-left text-xs whitespace-nowrap">
+                        Total Recibido en Acopio
+                    </td>
+
+                    @foreach ($dias as $dia)
+                    @php $fecha = $dia->format('Y-m-d'); @endphp
+                    <td class="border border-gray-300 text-center cursor-pointer hover:bg-amber-500" wire:click="editarAcopio('{{ $fecha }}')">
+
+                        @if($editandoAcopio &&
+                        $editandoAcopio['fecha'] === $fecha &&
+                        $editandoAcopio['localidad_id'] === $localidad_id &&
+                        $editandoAcopio['tipo_semana'] === $tipo_semana)
+
+                        <input type="number" class="w-full text-center"
+                            wire:model.defer="litrosAcopio"
+                            wire:keydown.enter="guardarAcopio('{{ $fecha }}')"
+                            wire:blur="guardarAcopio('{{ $fecha }}')"
+                            wire:keydown.escape="$set('editandoAcopio', null)"
+                            x-data
+                            x-init="$nextTick(() => { $el.focus(); $el.select() })">
+
+                        @else
+                        {{ number_format($totalesAcopio[$fecha] ?? 0) }}
+                        @endif
+                    </td>
+                    @endforeach
+                </tr>
+
+                <tr>
+                    <td class="bg-gray-800 text-white sticky left-0 z-10 border border-gray-300 text-left text-xs whitespace-nowrap">
+                        Litros Perdidos en Ruta
+                    </td>
+                    @foreach ($dias as $dia)
+                    @php $fecha = $dia->format('Y-m-d'); @endphp
+                    <td class="bg-red-900 text-white border border-gray-300 text-center">
+                        {{ number_format(($totalesPorDia[$fecha] ?? 0) - ($totalesAcopio[$fecha] ?? 0)) }}
+                    </td>
+                    @endforeach
+                </tr>
+
+                <tr>
+                    <td class="bg-red-900 text-white sticky left-0 z-10 border border-gray-300 text-left text-xs whitespace-nowrap">
+                        % Litros perdidos
+                    </td>
+
+                    @foreach ($dias as $dia)
+                    @php $fecha = $dia->format('Y-m-d'); @endphp
+                    @php
+                    $campo = $totalesPorDia[$fecha] ?? 0;
+                    $acopio = $totalesAcopio[$fecha] ?? 0;
+                    $porcentaje = $campo > 0 ? (($campo - $acopio) / $campo * 100) : 0;
+                    @endphp
+                    <td class="bg-amber-800 border border-gray-300 text-center">
+                        {{ number_format($porcentaje, 2) }}%
+                    </td>
+                    @endforeach
+                </tr>
+
+
             </tbody>
         </table>
 
