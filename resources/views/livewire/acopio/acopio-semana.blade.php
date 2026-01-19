@@ -306,6 +306,15 @@
                     <td class="border border-gray-300 text-center">
                         {{ number_format(array_sum($totalesPorDia)) }}
                     </td>
+
+                    <td class="border border-gray-300 text-center">
+                        -
+                    </td>
+
+                    {{-- Total córdobas --}}
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalCordobas) }}
+                    </td>
                 </tr>
 
                 <tr>

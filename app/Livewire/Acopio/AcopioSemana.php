@@ -36,6 +36,7 @@ class AcopioSemana extends Component
     public $editandoAcopio = [];
     public $litrosAcopio = 0;
     public $totalesAcopio = [];
+    public $totalCordobas = 0;
 
     protected $queryString = [
         'localidad_id' => ['except' => null],
@@ -120,6 +121,7 @@ class AcopioSemana extends Component
     // Propiedad computada para el reporte
     public function getReporteProperty()
     {
+        Carbon::setLocale('es');
         $inicio = microtime(true);
 
         $fechaInicial = $this->fechaInicial;
@@ -257,6 +259,9 @@ class AcopioSemana extends Component
         }
 
         $this->numeroFilas = count($reporte);
+        // CALCULAR totalCordobas general
+        $this->totalCordobas = array_sum(array_column($reporte, 'total_cordobas'));
+
         $fin = microtime(true);
         $this->tiempo = round($fin - $inicio, 3);
         return $reporte;
@@ -276,7 +281,7 @@ class AcopioSemana extends Component
     public function cambiarTipoSemana($type_week)
     {
         $this->tipo_semana = $type_week;
-        $this->cargarTotalesAcopio();
+        $this->calcularSemana();
     }
 
     public function editar($productor_id, $fecha, $localidad_id)
