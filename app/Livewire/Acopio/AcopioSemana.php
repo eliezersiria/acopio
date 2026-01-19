@@ -37,6 +37,17 @@ class AcopioSemana extends Component
     public $litrosAcopio = 0;
     public $totalesAcopio = [];
     public $totalCordobas = 0;
+    public $totalDeduccionCompra = 0;
+    public $totalEfectivo = 0;
+    public $totalCombustible = 0;
+    public $totalAlimentos = 0;
+    public $totalLacteos = 0;
+    public $totalOtros = 0;
+    public $totalDeducciones = 0;
+    public $totalNetoRecibir = 0;
+    public $totalRecibidoAcopio = 0;
+    public $litrosPerdidosRuta = 0;
+
 
     protected $queryString = [
         'localidad_id' => ['except' => null],
@@ -64,6 +75,9 @@ class AcopioSemana extends Component
         $this->calcularSemana();
 
         $this->cargarTotalesAcopio();
+
+        $this->calcularTotalRecibidoAcopio();
+        
     }
 
     protected function cargarTotalesAcopio()
@@ -73,6 +87,17 @@ class AcopioSemana extends Component
             ->whereBetween('fecha', [$this->fechaInicial->format('Y-m-d'), $this->fechaFinal->format('Y-m-d')])
             ->pluck('litros', 'fecha')
             ->toArray();
+    }
+
+    protected function calcularTotalRecibidoAcopio()
+    {
+        $this->totalRecibidoAcopio = totalDiarioAcopio::where('localidad_id', $this->localidad_id)
+            ->where('tipo_semana', $this->tipo_semana)
+            ->whereBetween('fecha', [
+                $this->fechaInicial->format('Y-m-d'),
+                $this->fechaFinal->format('Y-m-d'),
+            ])
+            ->sum('litros');
     }
 
     protected function calcularSemana()
@@ -193,6 +218,15 @@ class AcopioSemana extends Component
 
         $reporte = [];
 
+        $this->totalDeduccionCompra = 0;
+        $this->totalEfectivo = 0;
+        $this->totalCombustible = 0;
+        $this->totalAlimentos = 0;
+        $this->totalLacteos = 0;
+        $this->totalOtros = 0;
+        $this->totalDeducciones = 0;
+        $this->totalNetoRecibir = 0;
+
         foreach ($productores as $productor) {
             $clave = $productor->id;
             $precioModel = $productor->preciosSemanales->first();
@@ -256,6 +290,23 @@ class AcopioSemana extends Component
                 $productor->total_otros;
             //Calcular neto a recibir
             $reporte[$clave]['neto_recibir'] = $reporte[$clave]['total_cordobas'] - $reporte[$clave]['total_deducciones'];
+
+            // ✅ SUMA GENERAL DE TOTAL DEDUCCION COMPRA
+            $this->totalDeduccionCompra += $reporte[$clave]['deduccion_compra'];
+            //🔥 ACUMULAR TOTAL EFECTIVO
+            $this->totalEfectivo += $productor->total_efectivo;
+            //🔥 ACUMULAR TOTAL COMBUSTIBLE
+            $this->totalCombustible += $productor->total_combustible;
+            //🔥 ACUMULAR TOTAL ALIMENTOS
+            $this->totalAlimentos += $productor->total_alimentos;
+            //🔥 ACUMULAR TOTAL LACTEOS
+            $this->totalLacteos += $productor->total_lacteos;
+            //🔥 ACUMULAR TOTAL LACTEOS
+            $this->totalOtros += $productor->total_otros;
+            // ✅ SUMA GENERAL DE TODAS LAS DEDUCCIONES
+            $this->totalDeducciones += $reporte[$clave]['total_deducciones'];
+            // ✅ SUMA GENERAL DE LO NETO A RECIBIR
+            $this->totalNetoRecibir += $reporte[$clave]['neto_recibir'];
         }
 
         $this->numeroFilas = count($reporte);
@@ -276,12 +327,14 @@ class AcopioSemana extends Component
         $this->localidad_id = $comarca_id;
         $this->localidad = Localidad::find($comarca_id)?->nombre;
         $this->cargarTotalesAcopio();
+        $this->calcularTotalRecibidoAcopio();
     }
 
     public function cambiarTipoSemana($type_week)
     {
         $this->tipo_semana = $type_week;
         $this->calcularSemana();
+        $this->calcularTotalRecibidoAcopio();
     }
 
     public function editar($productor_id, $fecha, $localidad_id)
@@ -428,6 +481,7 @@ class AcopioSemana extends Component
         $this->totalesAcopio[$fecha] = $this->litrosAcopio;
         $this->editandoAcopio = null;
         //$this->litrosAcopio = 0;
+        $this->calcularTotalRecibidoAcopio();
     }
 
     public function render()

@@ -293,7 +293,7 @@
                 </tr>
                 @endforeach
 
-                <tr>
+                <tr style="font-family: 'Ubuntu', sans-serif;">
                     <td class="bg-gray-800 text-white sticky left-0 z-10 border border-gray-300 text-left text-xs whitespace-nowrap">
                         Total Recibido en Campo
                     </td>
@@ -314,6 +314,38 @@
                     {{-- Total córdobas --}}
                     <td class="border border-gray-300 text-center">
                         {{ number_format($totalCordobas) }}
+                    </td>
+
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalDeduccionCompra, 0) }}
+                    </td>
+
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalEfectivo, 0) }}
+                    </td>
+
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalCombustible, 0) }}
+                    </td>
+
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalAlimentos, 0) }}
+                    </td>
+
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalLacteos, 0) }}
+                    </td>
+
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalOtros, 0) }}
+                    </td>
+
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalDeducciones, 1) }}
+                    </td>
+
+                    <td class="border border-gray-300 text-center">
+                        {{ number_format($totalNetoRecibir, 1) }}
                     </td>
                 </tr>
 
@@ -344,6 +376,10 @@
                         @endif
                     </td>
                     @endforeach
+
+                    <td class="border border-gray-300 text-center">
+                       {{ number_format($totalRecibidoAcopio) }}
+                    </td>
                 </tr>
 
                 <tr>
@@ -356,6 +392,9 @@
                         {{ number_format(($totalesPorDia[$fecha] ?? 0) - ($totalesAcopio[$fecha] ?? 0)) }}
                     </td>
                     @endforeach
+                    <td class="bg-red-900 text-white border border-gray-300 text-center">
+                        {{ number_format(array_sum($totalesPorDia) - $totalRecibidoAcopio) }}
+                    </td>
                 </tr>
 
                 <tr>
@@ -370,10 +409,15 @@
                     $acopio = $totalesAcopio[$fecha] ?? 0;
                     $porcentaje = $campo > 0 ? (($campo - $acopio) / $campo * 100) : 0;
                     @endphp
-                    <td class="bg-amber-800 border border-gray-300 text-center">
+                    <td class="bg-amber-800 text-white border border-gray-300 text-center">
                         {{ number_format($porcentaje, 2) }}%
                     </td>
                     @endforeach
+
+                    <td class="bg-amber-800 text-white border border-gray-300 text-center">
+                        
+                    </td>
+
                 </tr>
 
 
