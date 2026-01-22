@@ -46,8 +46,7 @@ class AcopioSemana extends Component
     public $totalDeducciones = 0;
     public $totalNetoRecibir = 0;
     public $totalRecibidoAcopio = 0;
-    public $litrosPerdidosRuta = 0;
-
+    //public $litrosPerdidosRuta = 0;
 
     protected $queryString = [
         'localidad_id' => ['except' => null],
@@ -77,7 +76,13 @@ class AcopioSemana extends Component
         $this->cargarTotalesAcopio();
 
         $this->calcularTotalRecibidoAcopio();
-        
+    }
+
+    public function getPorcentajeLitrosPerdidosProperty()
+    {
+        return $this->totalRecibidoAcopio > 0
+            ? round(($this->litrosPerdidosRuta / $this->totalRecibidoAcopio) * 100, 2)
+            : 0;
     }
 
     protected function cargarTotalesAcopio()
@@ -87,6 +92,15 @@ class AcopioSemana extends Component
             ->whereBetween('fecha', [$this->fechaInicial->format('Y-m-d'), $this->fechaFinal->format('Y-m-d')])
             ->pluck('litros', 'fecha')
             ->toArray();
+    }
+
+    public function getLitrosPerdidosRutaProperty()
+    {
+        $totalProductores = array_sum($this->totalesPorDia);
+
+        $perdidos = $totalProductores - $this->totalRecibidoAcopio;
+
+        return max($perdidos, 0); // nunca negativo
     }
 
     protected function calcularTotalRecibidoAcopio()
@@ -321,7 +335,10 @@ class AcopioSemana extends Component
     public function updatedFechaReporte()
     {
         $this->calcularSemana();
+        $this->cargarTotalesAcopio();
+        $this->calcularTotalRecibidoAcopio();
     }
+
     public function cambiarComarca($comarca_id)
     {
         $this->localidad_id = $comarca_id;
@@ -489,6 +506,7 @@ class AcopioSemana extends Component
         return view('livewire.acopio.acopio-semana', [
             'reporte' => $this->reporte,
             'textoSemana' => $this->textoSemana,
+            'porcentajeLitrosPerdidos' => $this->porcentajeLitrosPerdidos
         ]);
     }
 }

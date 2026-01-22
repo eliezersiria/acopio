@@ -393,7 +393,7 @@
                     </td>
                     @endforeach
                     <td class="bg-red-900 text-white border border-gray-300 text-center">
-                        {{ number_format(array_sum($totalesPorDia) - $totalRecibidoAcopio) }}
+                        {{ $this->litrosPerdidosRuta }}
                     </td>
                 </tr>
 
@@ -415,7 +415,7 @@
                     @endforeach
 
                     <td class="bg-amber-800 text-white border border-gray-300 text-center">
-                        
+                        {{ number_format($porcentajeLitrosPerdidos, 2) }}%
                     </td>
 
                 </tr>
