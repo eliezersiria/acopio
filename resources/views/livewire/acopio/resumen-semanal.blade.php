@@ -143,7 +143,7 @@
 
                     @foreach ($dias as $dia)
                     <td class="border border-gray-300 text-center text-white">
-                        {{ number_format($totalesPorDia[$dia] ?? 0, 0) }}
+                        {{ number_format($totalesCampoPorDia[$dia] ?? 0, 0) }}
                     </td>
                     @endforeach
 
@@ -166,7 +166,7 @@
 
                     @foreach ($dias as $dia)
                     <td class="border border-gray-300 text-white text-center">
-
+                        {{ number_format($totalAcopioPorDia[$dia] ?? 0, 0) }}
                     </td>
                     @endforeach
 
@@ -179,7 +179,7 @@
 
                     @foreach ($dias as $dia)
                     <td class="border border-gray-300 text-white text-center">
-
+                        {{ number_format($litrosPerdidosPorDia[$dia] ?? 0, 0) }}
                     </td>
                     @endforeach
 
@@ -193,7 +193,7 @@
 
                     @foreach ($dias as $dia)
                     <td class="border border-gray-300 text-center text-white">
-
+                        {{ number_format($porcentajePerdidosPorDia[$dia], 2) }} %
                     </td>
                     @endforeach
 

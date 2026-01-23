@@ -9,6 +9,7 @@ use App\Models\Acopio;
 use App\Models\Adelanto;
 use App\Models\PrecioLecheSemanal;
 use App\Models\Productor;
+use App\Models\totalDiarioAcopio;
 
 
 class ResumenSemanal extends Component
@@ -18,7 +19,10 @@ class ResumenSemanal extends Component
     public $numeroFilas;
     public $tiempo;
     public $fechaReporte;
-    public $totalesPorDia = [];
+    public $totalesCampoPorDia  = [];
+    public $totalAcopioPorDia = [];
+    public $litrosPerdidosPorDia = [];
+    public $porcentajePerdidosPorDia = [];
 
     protected $queryString = [
         //'localidad_id' => ['except' => null],
@@ -97,6 +101,12 @@ class ResumenSemanal extends Component
             $this->dias[] = $fechaInicial->copy()->addDays($i)->format('Y-m-d');
         }
 
+        // Inicializar totales generales
+        $this->totalesCampoPorDia   = array_fill_keys($this->dias, 0);
+        $this->totalAcopioPorDia = array_fill_keys($this->dias, 0);
+        $this->litrosPerdidosPorDia = array_fill_keys($this->dias, 0);
+        $this->porcentajePerdidosPorDia = array_fill_keys($this->dias, 0);
+
         // Productores con relaciones
         $productores = Productor::with([
             'localidad',
@@ -153,10 +163,24 @@ class ResumenSemanal extends Component
             ->where('semana', $this->tipo_semana)
             ->get();
 
-        $reporte = [];
 
-        // Inicializar totales generales
-        $this->totalesPorDia = array_fill_keys($this->dias, 0);
+        //📌 Consulta por rango de fechas y tipo de semana
+        $totalesAcopio = TotalDiarioAcopio::whereBetween('fecha', [
+            $fechaInicial->format('Y-m-d'),
+            $fechaFinal->format('Y-m-d')
+        ])
+            ->where('tipo_semana', $this->tipo_semana)
+            ->select('fecha')
+            ->selectRaw('SUM(litros) as total_litros')
+            ->groupBy('fecha')
+            ->get();
+
+        //🔹 Cargar el total por día
+        foreach ($totalesAcopio as $row) {
+            $this->totalAcopioPorDia[$row->fecha] = (float) $row->total_litros;
+        }
+
+        $reporte = [];
 
         foreach ($productores as $productor) {
 
@@ -192,7 +216,7 @@ class ResumenSemanal extends Component
                 $reporte[$localidadId]['total_cordobas'] += $litros * $precio;
 
                 // 👉 TOTAL GENERAL POR DÍA
-                $this->totalesPorDia[$fecha] += $litros;
+                $this->totalesCampoPorDia[$fecha] += $litros;
             }
 
             // Adelantos
@@ -202,6 +226,20 @@ class ResumenSemanal extends Component
             $reporte[$localidadId]['total_lacteos'] += $productor->total_lacteos;
             $reporte[$localidadId]['total_otros'] += $productor->total_otros;
         }
+
+        //4️⃣ Calcular Litros Perdidos por día
+        foreach ($this->dias as $dia) {
+            $campo  = $this->totalesCampoPorDia[$dia] ?? 0;
+            $acopio = $this->totalAcopioPorDia[$dia] ?? 0;
+
+            $perdidos = max(0, $campo - $acopio);
+            $this->litrosPerdidosPorDia[$dia] = $perdidos;
+
+            $this->porcentajePerdidosPorDia[$dia] = $campo > 0
+                ? round(($perdidos / $campo) * 100, 2)
+                : 0;
+        }
+
 
         // Cálculos finales por localidad
         foreach ($reporte as &$loc) {
