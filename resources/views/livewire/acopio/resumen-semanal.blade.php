@@ -170,6 +170,9 @@
                     </td>
                     @endforeach
 
+                    <td class="border border-gray-300 text-white text-center">
+                        {{ number_format($this->totalAcopioSemana) }}
+                    </td>
                 </tr>
 
                 <tr>
@@ -183,6 +186,9 @@
                     </td>
                     @endforeach
 
+                    <td class="border border-gray-300 text-white text-center">
+                        {{ number_format($this->totalLitrosPerdidosSemana) }}
+                    </td>
 
                 </tr>
 
@@ -197,6 +203,9 @@
                     </td>
                     @endforeach
 
+                    <td class="border border-gray-300 text-white text-center">
+                        {{ number_format($this->porcentajePerdidoSemana, 2) }}%
+                    </td>
 
                 </tr>
             </foot>

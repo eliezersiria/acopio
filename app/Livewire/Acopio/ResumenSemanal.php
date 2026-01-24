@@ -235,11 +235,8 @@ class ResumenSemanal extends Component
             $perdidos = max(0, $campo - $acopio);
             $this->litrosPerdidosPorDia[$dia] = $perdidos;
 
-            $this->porcentajePerdidosPorDia[$dia] = $campo > 0
-                ? round(($perdidos / $campo) * 100, 2)
-                : 0;
+            $this->porcentajePerdidosPorDia[$dia] = $campo > 0 ? round(($perdidos / $campo) * 100, 2) : 0;
         }
-
 
         // Cálculos finales por localidad
         foreach ($reporte as &$loc) {
@@ -261,6 +258,27 @@ class ResumenSemanal extends Component
         $this->tiempo = round($fin - $inicio, 3);
 
         return $reporte;
+    }
+
+    public function getTotalAcopioSemanaProperty()
+    {
+        return array_sum($this->totalAcopioPorDia);
+    }
+
+    public function getTotalLitrosPerdidosSemanaProperty()
+    {
+        return array_sum($this->litrosPerdidosPorDia);
+    }
+
+    public function getTotalCampoSemanaProperty()
+    {
+        return array_sum($this->totalesCampoPorDia);
+    }
+
+    public function getPorcentajePerdidoSemanaProperty()
+    {
+        $campo = $this->totalCampoSemana;
+        return $campo > 0 ? round(($this->totalLitrosPerdidosSemana / $campo) * 100, 2) : 0;
     }
 
 
