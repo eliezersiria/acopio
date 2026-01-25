@@ -203,14 +203,14 @@
 
                     @foreach ($dias as $dia)
                     <td class="border border-gray-300 text-center bg-gray-200 whitespace-nowrap">
-                        <span class="text-red-500 font-bold">
+                        <span class="text-red-600 font-bold">
                             {{ number_format($porcentajePerdidosPorDia[$dia], 2) }} %
                         </span>
                     </td>
                     @endforeach
 
                     <td class="border border-gray-300 text-center bg-gray-200">
-                        <span class="text-red-500 font-bold">
+                        <span class="text-red-600 font-bold">
                             {{ number_format($this->porcentajePerdidoSemana, 2) }}%
                         </span>
                     </td>
