@@ -181,13 +181,17 @@
                     </td>
 
                     @foreach ($dias as $dia)
-                    <td class="border border-gray-300 text-white text-center">
-                        {{ number_format($litrosPerdidosPorDia[$dia] ?? 0, 0) }}
+                    <td class="border border-gray-300 bg-gray-200 text-center">
+                        <span class="text-red-500 font-bold">
+                            {{ number_format($litrosPerdidosPorDia[$dia] ?? 0, 0) }}
+                        </span>
                     </td>
                     @endforeach
 
-                    <td class="border border-gray-300 text-white text-center">
-                        {{ number_format($this->totalLitrosPerdidosSemana) }}
+                    <td class="border border-gray-300 bg-gray-200 text-center">
+                        <span class="text-red-500 font-bold">
+                            {{ number_format($this->totalLitrosPerdidosSemana) }}
+                        </span>
                     </td>
 
                 </tr>
@@ -198,13 +202,17 @@
                     </td>
 
                     @foreach ($dias as $dia)
-                    <td class="border border-gray-300 text-center text-white">
-                        {{ number_format($porcentajePerdidosPorDia[$dia], 2) }} %
+                    <td class="border border-gray-300 text-center bg-gray-200 whitespace-nowrap">
+                        <span class="text-red-500 font-bold">
+                            {{ number_format($porcentajePerdidosPorDia[$dia], 2) }} %
+                        </span>
                     </td>
                     @endforeach
 
-                    <td class="border border-gray-300 text-white text-center">
-                        {{ number_format($this->porcentajePerdidoSemana, 2) }}%
+                    <td class="border border-gray-300 text-center bg-gray-200">
+                        <span class="text-red-500 font-bold">
+                            {{ number_format($this->porcentajePerdidoSemana, 2) }}%
+                        </span>
                     </td>
 
                 </tr>
