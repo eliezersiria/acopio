@@ -25,7 +25,7 @@
         <div role="tablist" class="tabs tabs-box">
             @foreach ($comarcas as $comarca)
             <a role="tab" class="tab transition{{ $comarca->id == $localidad_id? 'tab-active font-bold text-white bg-lime-700' : '' }}"
-                wire:navigate wire:click="cambiarComarca({{ $comarca->id }})">
+                wire:click="cambiarComarca({{ $comarca->id }})">
                 {{ $comarca->nombre }}
             </a>
             @endforeach

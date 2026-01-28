@@ -7,9 +7,12 @@ use App\Models\Localidad;
 use Illuminate\Support\Carbon;
 use Carbon\CarbonInterface;
 use App\Models\Productor;
+use Livewire\WithPagination;
 
 class Recibos extends Component
 {
+    use WithPagination;
+
     public $comarcas;
     public $localidad_id;
     public $localidad;
@@ -18,6 +21,12 @@ class Recibos extends Component
     public $tipo_semana;
     public $tiempo;
     public $numeroFilas;
+
+    protected $queryString = [
+        'localidad_id' => ['except' => null],
+        'tipo_semana' => ['except' => null],
+        'fechaReporte' => ['except' => null],
+    ];
 
     public function mount()
     {
@@ -36,15 +45,24 @@ class Recibos extends Component
         $this->fechaReporte ??= now()->format('Y-m-d');
     }
 
+    // Quitamos cargarReporte de mount y lo llamamos desde render
+
     public function cambiarComarca($comarca_id)
     {
         $this->localidad_id = $comarca_id;
         $this->localidad = Localidad::find($comarca_id)?->nombre;
+        $this->resetPage(); // Importante: resetear paginación
     }
 
     public function cambiarTipoSemana($type_week)
     {
         $this->tipo_semana = $type_week;
+        $this->resetPage(); // Importante: resetear paginación
+    }
+
+    public function updatedFechaReporte()
+    {
+        $this->resetPage(); // Importante: resetear paginación
     }
 
     public function getTextoSemanaProperty()
@@ -62,7 +80,8 @@ class Recibos extends Component
         if ($fechaInicial->format('m-Y') === $fechaFinal->format('m-Y')) {
             return 'Semana del ' . $fechaInicial->format('d')
                 . ' al ' . $fechaFinal->format('d')
-                . ' de ' . $fechaInicial->locale('es')->isoFormat('MMMM');
+                . ' de ' . $fechaInicial->locale('es')->isoFormat('MMMM') . ' '
+                . $fechaFinal->format('Y');
         } else {
             return 'Semana del ' . $fechaInicial->format('d') . ' '
                 . $fechaInicial->locale('es')->isoFormat('MMMM')
@@ -72,97 +91,46 @@ class Recibos extends Component
         }
     }
 
-    public function getReporteProperty()
+    public function render()
     {
         $inicio = microtime(true);
+        Carbon::setLocale('es');
+
+        $hoy = Carbon::parse($this->fechaReporte);
+
+        $fechaInicial = match ($this->tipo_semana) {
+            'A' => $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY),
+            'B' => $hoy->copy()->startOfWeek(CarbonInterface::FRIDAY),
+            default => $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY),
+        };
+
+        $fechaFinal = $fechaInicial->copy()->addDays(6);
+
+        // 🔹 DÍAS
+        $this->dias = [];
+        for ($i = 0; $i < 7; $i++) {
+            $this->dias[] = $fechaInicial->copy()->addDays($i);
+        }
+
+        // 🔹 PRODUCTORES con paginación
+        $productores = Productor::with(['acopios' => function ($q) use ($fechaInicial, $fechaFinal) {
+            $q->whereBetween('fecha', [
+                $fechaInicial->toDateString(),
+                $fechaFinal->toDateString()
+            ]);
+        }])
+            ->where('localidad_id', $this->localidad_id)
+            ->where('semana', $this->tipo_semana)
+            ->paginate(9);
+
+        $this->numeroFilas = $productores->count();
+
         $fin = microtime(true);
         $this->tiempo = round($fin - $inicio, 3);
 
-        Carbon::setLocale('es');
-        // Determinar el primer día de la semana según tipo_semana
-        $hoy = Carbon::parse($this->fechaReporte);
-        switch ($this->tipo_semana) {
-            case 'A':
-                $fechaInicial = $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY);
-                break;
-
-            case 'B':
-                $fechaInicial = $hoy->copy()->startOfWeek(CarbonInterface::FRIDAY);
-                break;
-
-            default:
-                $fechaInicial = $hoy->copy()->startOfWeek(CarbonInterface::SUNDAY);
-                break;
-        }
-        $fechaFinal = $fechaInicial->copy()->addDays(6);
-
-        //Consulta de productores y acopios
-        $productores = Productor::with([
-            'localidad',
-            'acopios' => function ($query) use ($fechaInicial, $fechaFinal) {
-                $query->whereBetween('fecha', [
-                    $fechaInicial->format('Y-m-d'),
-                    $fechaFinal->format('Y-m-d')
-                ]);
-            },
-            'preciosSemanales' => function ($query) use ($fechaInicial) {
-                $query->where('fecha_inicio', $fechaInicial);
-            },
-        ])
-            ->withSum([
-                'adelantos as total_efectivo' => function ($query) use ($fechaInicial, $fechaFinal) {
-                    $query->whereBetween('fecha', [
-                        $fechaInicial->format('Y-m-d'),
-                        $fechaFinal->format('Y-m-d')
-                    ]);
-                }
-            ], 'efectivo')
-            ->withSum([
-                'adelantos as total_alimentos' => function ($query) use ($fechaInicial, $fechaFinal) {
-                    $query->whereBetween('fecha', [
-                        $fechaInicial->format('Y-m-d'),
-                        $fechaFinal->format('Y-m-d')
-                    ]);
-                }
-            ], 'alimentos')
-            ->withSum([
-                'adelantos as total_lacteos' => function ($query) use ($fechaInicial, $fechaFinal) {
-                    $query->whereBetween('fecha', [
-                        $fechaInicial->format('Y-m-d'),
-                        $fechaFinal->format('Y-m-d')
-                    ]);
-                }
-            ], 'lacteos')
-            ->withSum([
-                'adelantos as total_otros' => function ($query) use ($fechaInicial, $fechaFinal) {
-                    $query->whereBetween('fecha', [
-                        $fechaInicial->format('Y-m-d'),
-                        $fechaFinal->format('Y-m-d')
-                    ]);
-                }
-            ], 'otros')
-            ->withSum([
-                'adelantos as total_combustible' => function ($query) use ($fechaInicial, $fechaFinal) {
-                    $query->whereBetween('fecha', [
-                        $fechaInicial->format('Y-m-d'),
-                        $fechaFinal->format('Y-m-d')
-                    ]);
-                }
-            ], 'combustible')
-            ->where('semana', $this->tipo_semana)
-            ->whereHas('localidad', function ($q) {
-                $q->where('id', $this->localidad_id);
-            })
-            ->get();
-
-
-    }
-
-    public function render()
-    {
         return view('livewire.acopio.recibos', [
-            'reporte' => $this->reporte,
-            'textoSemana' => $this->textoSemana
+            'productores' => $productores,
+            'fechaInicial' => $fechaInicial->format('Y-m-d')
         ]);
     }
 }
