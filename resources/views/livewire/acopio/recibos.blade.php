@@ -44,16 +44,18 @@
         @php
         $totalLitrosProductor = 0;
         $totalCordobasProductor = 0;
+        $deduccionCompra = 0;
+        $netoRecibir = 0;
         @endphp
-        <div class="card bg-base-100 shadow-xl">
+        <div class="card bg-base-100">
             <div class="card-body">
                 <h2 class="card-title">{{ $this->textoSemana }}</h2>
                 <h2 class="card-title">{{ $productor->nombre }}</h2>
 
                 <div class="overflow-x-auto">
-                    <table class="table table-zebra">
+                    <table class="table table-zebra border">
                         <thead>
-                            <tr class="bg-emerald-400 text-black">
+                            <tr class="bg-emerald-400 text-black border">
                                 <th>Día</th>
                                 <th>Litros</th>
                                 <th>Total C$</th>
@@ -76,19 +78,19 @@
                             // 👇 acumuladores
                             $totalLitrosProductor += $litros;
                             $totalCordobasProductor += $total;
+                            $deduccionCompra = $totalCordobasProductor * 0.013;
+                            $netoRecibir = $totalCordobasProductor - $deduccionCompra - $productor->adelantos->sum('total');
                             @endphp
 
-                            <tr>
+                            <tr class="hover:bg-base-300">
                                 <td class="py-2">{{ $dia->locale('es')->isoFormat('ddd DD') }}</td>
                                 <td class="py-2 text-center">{{ number_format($litros) }}</td>
-                                <td class="py-2 text-right font-bold">
+                                <td class="py-2 text-right">
                                     C$ {{ number_format($total, 2) }}
                                 </td>
                             </tr>
                             @endforeach
-                        </tbody>
 
-                        <tfoot>
                             <tr class="font-bold">
                                 <td>Total</td>
                                 <td class="text-center">{{ $totalLitrosProductor }}</td>
@@ -96,7 +98,26 @@
                                     C$ {{ number_format($totalCordobasProductor, 2) }}
                                 </td>
                             </tr>
-                        </tfoot>
+
+                            <tr>
+                                <td colspan="3" class="text-center font-bold">Deducciones</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" class="text-xs">% de Deducción por compra</td>
+                                <td class="text-right font-bold">C$ {{ number_format($deduccionCompra) }}</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" class="text-xs">Anticipos y/o Adelantos</td>
+                                <td class="text-right font-bold">C$ {{ $productor->adelantos->sum('total') }}</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" class="text-xs">Neto a Recibir</td>
+                                <td class="text-right font-bold">C$ {{ number_format($netoRecibir, 2) }}</td>
+                            </tr>
+                        </tbody>
 
                     </table>
                 </div>

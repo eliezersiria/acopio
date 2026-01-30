@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Carbon\CarbonInterface;
 use App\Models\Productor;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 
 class Recibos extends Component
 {
@@ -113,12 +114,25 @@ class Recibos extends Component
         }
 
         // 🔹 PRODUCTORES con paginación
-        $productores = Productor::with(['acopios' => function ($q) use ($fechaInicial, $fechaFinal) {
-            $q->whereBetween('fecha', [
-                $fechaInicial->toDateString(),
-                $fechaFinal->toDateString()
-            ]);
-        }])
+        $productores = Productor::with([
+            'acopios' => function ($q) use ($fechaInicial, $fechaFinal) {
+                $q->whereBetween('fecha', [
+                    $fechaInicial->toDateString(),
+                    $fechaFinal->toDateString()
+                ]);
+            },
+            'adelantos' => function ($q) use ($fechaInicial, $fechaFinal) {
+                $q->select(
+                    'productor_id',
+                    'fecha',
+                    DB::raw('(efectivo + combustible + alimentos + lacteos + otros) as total')
+                )
+                    ->whereBetween('fecha', [
+                        $fechaInicial->toDateString(),
+                        $fechaFinal->toDateString()
+                    ]);
+            }
+        ])
             ->where('localidad_id', $this->localidad_id)
             ->where('semana', $this->tipo_semana)
             ->paginate(9);
